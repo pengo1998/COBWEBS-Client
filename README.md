@@ -8,17 +8,17 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
 # Plans
 - Minimize dependencies
 - Fix inconsistent return value types
+- Authentication support
+- Documentation
+- Proper code commenting
 
 # Feature Status
-	These are the targeted features for first release
+	These are the features planned for the first release version.
+	First release is planned for the end of March 2023.
 🟥 - Not Started<br>
 🟧 - WIP<br>
 🟨 - Finished & Untested<br>
 🟩 - Finished & Tested
-
-## Core
-- 🟧Client Setup
-- 🟥Authentication
 
 ## Requests
 - 🟨<b>General Requests</b>
@@ -124,52 +124,52 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟨SetSceneItemIndex
   - 🟨GetSceneItemBlendMode
   - 🟨SetSceneItemBlendMode
-- 🟥<b>Outputs Requests</b>
-  - 🟥GetVirtualCamStatus
-  - 🟥ToggleVirtualCam
-  - 🟥StartVirtualCam
-  - 🟥StopVirtualCam
-  - 🟥GetReplayBufferStatus
-  - 🟥ToggleReplayBuffer
-  - 🟥StartReplayBuffer
-  - 🟥StopReplayBuffer
-  - 🟥SaveReplayBuffer
-  - 🟥GetLastReplayBufferReplay
-  - 🟥GetOutputList
-  - 🟥GetOutputStatus
-  - 🟥ToggleOutput
-  - 🟥StartOutput
-  - 🟥StopOutput
-  - 🟥GetOutputSettings
-  - 🟥SetOutputSettings
-- 🟥<b>Stream Requests</b>
-  - 🟥GetStreamStatus
-  - 🟥ToggleStream
-  - 🟥StartStream
-  - 🟥StopStream
-  - 🟥SendStreamCaption
-- 🟥<b>Record Requests</b>
-  - 🟥GetRecordStatus
-  - 🟥ToggleRecord
-  - 🟥StartRecord
-  - 🟥StopRecord
-  - 🟥ToggleRecordPause
-  - 🟥PauseRecord
-  - 🟥ResumeRecord
-- 🟥<b>Media Inputs Requests</b>
-  - 🟥GetMediaInputStatus
-  - 🟥SetMediaInputCursor
-  - 🟥OffsetMediaInputCursor
-  - 🟥TriggerMediaInputAction
-- 🟥<b>Ui Requests</b>
-  - 🟥GetStudioModeEnabled
-  - 🟥SetStudioModeEnabled
-  - 🟥OpenInputPropertiesDialog
-  - 🟥OpenInputFiltersDialog
-  - 🟥OpenInputInteractDialog
-  - 🟥GetMonitorList
-  - 🟥OpenVideoMixProjector
-  - 🟥OpenSourceProjector
+- 🟨<b>Outputs Requests</b>
+  - 🟨GetVirtualCamStatus
+  - 🟨ToggleVirtualCam
+  - 🟨StartVirtualCam
+  - 🟨StopVirtualCam
+  - 🟨GetReplayBufferStatus
+  - 🟨ToggleReplayBuffer
+  - 🟨StartReplayBuffer
+  - 🟨StopReplayBuffer
+  - 🟨SaveReplayBuffer
+  - 🟨GetLastReplayBufferReplay
+  - 🟨GetOutputList
+  - 🟨GetOutputStatus
+  - 🟨ToggleOutput
+  - 🟨StartOutput
+  - 🟨StopOutput
+  - 🟨GetOutputSettings
+  - 🟨SetOutputSettings
+- 🟨<b>Stream Requests</b>
+  - 🟨GetStreamStatus
+  - 🟨ToggleStream
+  - 🟨StartStream
+  - 🟨StopStream
+  - 🟨SendStreamCaption
+- 🟨<b>Record Requests</b>
+  - 🟨GetRecordStatus
+  - 🟨ToggleRecord
+  - 🟨StartRecord
+  - 🟨StopRecord
+  - 🟨ToggleRecordPause
+  - 🟨PauseRecord
+  - 🟨ResumeRecord
+- 🟨<b>Media Inputs Requests</b>
+  - 🟨GetMediaInputStatus
+  - 🟨SetMediaInputCursor
+  - 🟨OffsetMediaInputCursor
+  - 🟨TriggerMediaInputAction
+- 🟨<b>Ui Requests</b>
+  - 🟨GetStudioModeEnabled
+  - 🟨SetStudioModeEnabled
+  - 🟨OpenInputPropertiesDialog
+  - 🟨OpenInputFiltersDialog
+  - 🟨OpenInputInteractDialog
+  - 🟨GetMonitorList
+  - 🟨OpenVideoMixProjector
+  - 🟨OpenSourceProjector
 
 ## Events
 	
