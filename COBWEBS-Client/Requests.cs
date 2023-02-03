@@ -29,6 +29,36 @@ namespace COBWEBS_Client
 			var res = GetResponse<STRUCT_GET_STATS>(req.Data.RequestID);
 			return res;
 		}
+		public async Task<string[]> GetHotkeyList()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetHotkeyList";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<string[]>(req.Data.RequestID, "hotkeys");
+			return res;
+		}
+		public async void TriggerHotkeyByName(string hotkeyName)
+		{
+			Request req = new();
+			req.Data.RequestType = "TriggerHotkeyByName";
+			req.Data.RequestData = new { hotkeyName = hotkeyName };
+			SendMessage(req);
+		}
+		public async void SleepMillis(int sleepMillis)
+		{
+			Request req = new();
+			req.Data.RequestType = "Sleep";
+			req.Data.RequestData = new { sleepMillis = sleepMillis };
+			SendMessage(req);
+		}
+		public async void sleepFrames(int sleepFrames)
+		{
+			Request req = new();
+			req.Data.RequestType = "Sleep";
+			req.Data.RequestData = new { sleepFrames = sleepFrames };
+			SendMessage(req);
+		}
 		#endregion
 		#region CONFIG_REQUESTS
 		public async Task<STRUCT_GET_VIDEO_SETTINGS> GetVideoSettings()
@@ -47,6 +77,48 @@ namespace COBWEBS_Client
 			req.Data.RequestID = GenerateRequestID();
 			SendMessage(req);
 			var res = GetResponse<STRUCT_GET_STREAM_SERVICE_SETTINGS>(req.Data.RequestID); // Returns object
+			return res;
+		}
+		public async void SetCurrentProfile(string profileName)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetCurrentProfile";
+			req.Data.RequestData = new { profileName = profileName };
+			SendMessage(req);
+		}
+		public async void CreateProfile(string profileName)
+		{
+			Request req = new();
+			req.Data.RequestType = "CreateProfile";
+			req.Data.RequestData = new { profileName = profileName };
+			SendMessage(req);
+		}
+		public async void RemoveProfile(string profileName)
+		{
+			Request req = new();
+			req.Data.RequestType = "RemoveProfile";
+			req.Data.RequestData = new { profileName = profileName };
+			SendMessage(req);
+		}
+		public async Task<string> GetRecordDirectory()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetRecordDirectory";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<string>(req.Data.RequestID, "recordDirectory");
+			return res;
+		}
+		#endregion
+		#region SOURCE_REQUESTS
+		public async Task<STRUCT_GET_SOURCE_ACTIVE> GetSourceActive(string sourceName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSourceActive";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { sourceName = sourceName };
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_SOURCE_ACTIVE>(req.Data.RequestID);
 			return res;
 		}
 		#endregion

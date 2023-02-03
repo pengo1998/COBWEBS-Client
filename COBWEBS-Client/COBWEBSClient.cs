@@ -289,7 +289,6 @@ namespace COBWEBS_Client
 			}
 			return null;
 		}
-
 		#region UNTESTED_REQUESTS
 			#region GENERAL_REQUESTS
 		public async Task<JToken> CallVendorRequest(string vendorName, string requestType, object requestData)
@@ -306,39 +305,9 @@ namespace COBWEBS_Client
 		{
 			throw new NotImplementedException();
 		}
-		public async Task<string[]> GetHotkeyList()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetHotkeyList";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<string[]>(req.Data.RequestID, "hotkeys");
-			return res;
-		}
-		public async void TriggerHotkeyByName(string hotkeyName)
-		{
-			Request req = new();
-			req.Data.RequestType = "TriggerHotkeyByName";
-			req.Data.RequestData = new { hotkeyName = hotkeyName };
-			SendMessage(req);
-		}
 		public async void TriggerHotkeyByKeySequence()
 		{
 			throw new NotImplementedException();
-		}
-		public async void SleepMillis(int sleepMillis)
-		{
-			Request req = new();
-			req.Data.RequestType = "Sleep";
-			req.Data.RequestData = new { sleepMillis = sleepMillis };
-			SendMessage(req);
-		}
-		public async void sleepFrames(int sleepFrames)
-		{
-			Request req = new();
-			req.Data.RequestType = "Sleep";
-			req.Data.RequestData = new { sleepFrames = sleepFrames };
-			SendMessage(req);
 		}
 		#endregion
 			#region CONFIG_REQUESTS
@@ -395,27 +364,6 @@ namespace COBWEBS_Client
 			var res = GetResponse<STRUCT_GET_PROFILE_LIST>(req.Data.RequestID);
 			return res;
 		}
-		public async void SetCurrentProfile(string profileName)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetCurrentProfile";
-			req.Data.RequestData = new { profileName = profileName };
-			SendMessage(req);
-		}
-		public async void CreateProfile(string profileName)
-		{
-			Request req = new();
-			req.Data.RequestType = "CreateProfile";
-			req.Data.RequestData = new { profileName = profileName };
-			SendMessage(req);
-		}
-		public async void RemoveProfile(string profileName)
-		{
-			Request req = new();
-			req.Data.RequestType = "RemoveProfile";
-			req.Data.RequestData = new { profileName = profileName };
-			SendMessage(req);
-		}
 		public async Task<STRUCT_GET_PROFILE_PARAMETER> GetProfileParameter(string parameterCategory, string parameterName)
 		{
 			Request req = new();
@@ -468,27 +416,8 @@ namespace COBWEBS_Client
 			};
 			SendMessage(req);
 		}
-		public async Task<string> GetRecordDirectory()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetRecordDirectory";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<string>(req.Data.RequestID, "recordDirectory");
-			return res;
-		}
 		#endregion
 			#region SOURCE_REQUESTS
-		public async Task<STRUCT_GET_SOURCE_ACTIVE> GetSourceActive(string sourceName)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSourceActive";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new { sourceName = sourceName };
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_SOURCE_ACTIVE>(req.Data.RequestID);
-			return res;
-		}
 		public async Task<string> GetSourceScreenshot(string sourceName, string imageFormat, int? imageWidth, int? imageHeight, int? imageCompressionQuality)
 		{
 			Request req = new();

@@ -24,12 +24,12 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
 - 🟨<b>General Requests</b>
   - 🟩GetVersion
   - 🟩GetStats
-  - 🟨BroadcastCustomEvent
+  - 🟥BroadcastCustomEvent
   - 🟨CallVendorRequest
-  - 🟨GetHotkeyList
-  - 🟨TriggerHotkeyByName
-  - 🟨TriggerHotkeyByKeySequence
-  - 🟨Sleep
+  - 🟩GetHotkeyList
+  - 🟩TriggerHotkeyByName
+  - 🟥TriggerHotkeyByKeySequence
+  - 🟩Sleep
 - 🟨<b>Config Requests</b>
   - 🟨GetPersistentData
   - 🟨SetPersistentData
@@ -37,16 +37,16 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟨SetCurrentSceneCollection
   - 🟨CreateSceneCollection
   - 🟨GetProfileList
-  - 🟨SetCurrentProfile
-  - 🟨CreateProfile
-  - 🟨RemoveProfile
+  - 🟩SetCurrentProfile
+  - 🟩CreateProfile
+  - 🟩RemoveProfile
   - 🟨GetProfileParameter
   - 🟨SetProfileParameter
   - 🟩GetVideoSettings
   - 🟨SetVideoSettings
   - 🟩GetStreamServiceSettings
   - 🟨SetStreamServiceSettings
-  - 🟨GetRecordDirectory
+  - 🟩GetRecordDirectory
 - 🟨<b>Sources Requests</b>
   - 🟨GetSourceActive
   - 🟨GetSourceScreenshot
