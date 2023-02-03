@@ -13,11 +13,11 @@ namespace COBWEBS_Client.Responses
 		public double availableDiskSpace { get; set; }
 		public double activeFps { get; set; }
 		public double averageFrameRenderTime { get; set; }
-		public double renderSkippedFrames { get; set; }
-		public double renderTotalFrames { get; set; }
-		public double outputSkippedFrames { get; set; }
-		public double outputTotalFrames { get; set; }
-		public double webSocketSessionIncomingMessages { get; set; }
-		public double webSocketSessionOutgoingMessages { get; set; }
+		public ulong renderSkippedFrames { get; set; }
+		public ulong renderTotalFrames { get; set; }
+		public ulong outputSkippedFrames { get; set; }
+		public ulong outputTotalFrames { get; set; }
+		public ulong webSocketSessionIncomingMessages { get; set; }
+		public ulong webSocketSessionOutgoingMessages { get; set; }
 	}
 }

@@ -8,8 +8,8 @@ namespace COBWEBS_Client.Responses
 {
 	public struct STRUCT_GET_VIDEO_SETTINGS
 	{
-		public double fpsNumerator { get; set; }
-		public double fpsDenominator { get; set; }
+		public int fpsNumerator { get; set; }
+		public int fpsDenominator { get; set; }
 		public int baseWidth { get; set; }
 		public int baseHeight { get; set; }
 		public int outputWidth { get; set; }

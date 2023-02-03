@@ -10,7 +10,7 @@ namespace COBWEBS_Client.Responses
 	{
 		public string obsVersion { get; set; }
 		public string obsWebSocketVersion { get; set; }
-		public double rpcVersion { get; set; }
+		public int rpcVersion { get; set; }
 		public string[] availableRequests { get; set; }
 		public string[] supportedImageFormats { get; set; }
 		public string platform { get; set; }

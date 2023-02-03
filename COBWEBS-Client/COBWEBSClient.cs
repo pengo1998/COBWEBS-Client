@@ -9,7 +9,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace COBWEBS_Client
 {
-	public class COBWEBSClient
+	public partial class COBWEBSClient
 	{
 		private readonly COBWEBSConfiguration _config;
 		private ClientWebSocket _conn;
@@ -90,7 +90,7 @@ namespace COBWEBS_Client
 			try
 			{
 				_conn.Options.KeepAliveInterval = TimeSpan.FromSeconds(10);
-				_conn.ConnectAsync(new Uri($"es://{_config.IP}:{_config.Port.ToString()}"), CancellationToken.None);
+				_conn.ConnectAsync(new Uri($"ws://{_config.IP}:{_config.Port.ToString()}"), CancellationToken.None);
 			} catch(Exception e)
 			{
 				Logger.LogError(e.ToString());
@@ -160,27 +160,23 @@ namespace COBWEBS_Client
 			Logger.LogDebug("Message receiver started.");
 			while (_conn.State == WebSocketState.Open)
 			{
-				try
+				bool foundEnd = false;
+				byte[] buffer = new byte[32768];
+				using (MemoryStream ms = new())
 				{
-					bool foundEnd = false;
-					byte[] buffer = new byte[1024];
-					using (MemoryStream ms = new())
+					while (!foundEnd)
 					{
-						while (!foundEnd)
+						var res = _conn.ReceiveAsync(buffer, CancellationToken.None);
+						res.Wait();
+						if (res.Result.Count > 0)
 						{
-							var res = _conn.ReceiveAsync(buffer, CancellationToken.None);
-							res.Wait();
-							if (res.Result.Count > 0)
-							{
-								ms.Write(buffer, 0, buffer.Length);
-								if (res.Result.EndOfMessage == true) foundEnd = true;
-							}
+							ms.Write(buffer, 0, buffer.Length);
+							if (res.Result.EndOfMessage == true) foundEnd = true;
 						}
-						string result = Encoding.UTF8.GetString(ms.ToArray(), 0, (int)ms.Length);
-						ProcessMessage(result);
 					}
+					string result = Encoding.UTF8.GetString(ms.ToArray(), 0, (int)ms.Length);
+					ProcessMessage(result);
 				}
-				catch { }
 			}
 			Logger.LogDebug("Message receiver thread closed.");
 		}
@@ -191,16 +187,14 @@ namespace COBWEBS_Client
 			var opCode = jtoken.ToObject<int>();
 			switch (opCode)
 			{
-				case 7:
-					// Request Response
+				case 7: // Request Response
 					string reqId = jobj["d"]["requestId"].ToObject<string>();
 					if (!string.IsNullOrEmpty(reqId)) _pendingMessages.Add(reqId, jobj);
 					break;
-				case 5:
-					// Event
+				case 5: // Event
+					HandleEvent(jobj);
 					break;
-				case 8:
-					// Request Batch Response
+				case 8: // Request Batch Response
 					break;
 				default:
 					Logger.LogDebug("Received unknown message: " + message);
@@ -229,6 +223,10 @@ namespace COBWEBS_Client
 				Logger.LogDebug($"Received: {result}");
 				return result;
 			}
+		}
+		private async void HandleEvent(JObject message)
+		{
+			Console.ReadKey();
 		}
 		private async void SendMessage(Request req)
 		{
@@ -292,30 +290,8 @@ namespace COBWEBS_Client
 			return null;
 		}
 
-		#region REQUESTS
+		#region UNTESTED_REQUESTS
 			#region GENERAL_REQUESTS
-		public async Task<STRUCT_GET_VERSION> GetVersion()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetVersion";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_VERSION>(req.Data.RequestID);
-			return res;
-		}
-		public async Task<STRUCT_GET_STATS> GetStats()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetStats";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_STATS>(req.Data.RequestID);
-			return res;
-		}
-		public async void BroadcastCustomEvent()
-		{
-			throw new NotImplementedException();
-		}
 		public async Task<JToken> CallVendorRequest(string vendorName, string requestType, object requestData)
 		{
 			Request req = new();
@@ -325,6 +301,10 @@ namespace COBWEBS_Client
 			SendMessage(req);
 			var res = GetResponse(req.Data.RequestID);
 			return res;
+		}
+		public async void BroadcastCustomEvent()
+		{
+			throw new NotImplementedException();
 		}
 		public async Task<string[]> GetHotkeyList()
 		{
@@ -462,15 +442,6 @@ namespace COBWEBS_Client
 			};
 			SendMessage(req);
 		}
-		public async Task<STRUCT_GET_VIDEO_SETTINGS> GetVideoSettings()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetVideoSettings";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_VIDEO_SETTINGS>(req.Data.RequestID);
-			return res;
-		}
 		public async void SetVideoSettings(double? fpsNumerator, double? fpsDenominator, int? baseWidth, int? baseHeight, int? outputWidth, int? outputHeight)
 		{
 			Request req = new();
@@ -485,15 +456,6 @@ namespace COBWEBS_Client
 				outputHeight = (outputHeight ?? null)
 			};
 			SendMessage(req);
-		}
-		public async Task<STRUCT_GET_STREAM_SERVICE_SETTINGS> GetStreamServiceSettings()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetStreamServiceSettings";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_STREAM_SERVICE_SETTINGS>(req.Data.RequestID); // Returns object
-			return res;
 		}
 		public async void SetStreamServiceSettings(string streamServiceType, object streamServiceSettings)
 		{
@@ -564,15 +526,6 @@ namespace COBWEBS_Client
 		}
 		#endregion
 			#region SCENE_REQUESTS
-		public async Task<STRUCT_GET_SCENE_LIST> GetSceneList()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSceneList";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_SCENE_LIST>(req.Data.RequestID); // Returns object
-			return res;
-		}
 		public async Task<string[]> GetGroupList()
 		{
 			Request req = new();
@@ -934,15 +887,6 @@ namespace COBWEBS_Client
 			var res = GetResponse<string[]>(req.Data.RequestID, "transitionKinds");
 			return res;
 		}
-		public async Task<STRUCT_GET_SCENE_TRANSITION_LIST> GetSceneTransitionList()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSceneTransitionList";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_SCENE_TRANSITION_LIST>(req.Data.RequestID); // returns object array
-			return res;
-		}
 		public async Task<STRUCT_GET_CURRENT_SCENE_TRANSITION> GetCurrentSceneTransition()
 		{
 			Request req = new();
@@ -1005,26 +949,6 @@ namespace COBWEBS_Client
 		}
 		#endregion
 			#region FILTER_REQUESTS
-		public async Task<STRUCT_GET_SOURCE_FILTER_LIST> GetSourceFilterList(string sourceName)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSourceFilterList";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new { sourceName = sourceName };
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_SOURCE_FILTER_LIST>(req.Data.RequestID); // returns object
-			return res;
-		}
-		public async Task<STRUCT_GET_SOURCE_FILTER_DEFAULT_SETTINGS> GetSourceFilterDefaultSettings(string filterKind)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSourceFilterDefaultSettings";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new { filterKind = filterKind };
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_SOURCE_FILTER_DEFAULT_SETTINGS>(req.Data.RequestID); // return object
-			return res;
-		}
 		public async void CreateSourceFilter(string sourceName, string filterName, string filterKind, object? filterSettings)
 		{
 			Request req = new();
@@ -1109,16 +1033,6 @@ namespace COBWEBS_Client
 		}
 		#endregion
 			#region SCENE_ITEM_REQUESTS
-		public async Task<STRUCT_GET_SCENE_ITEM_LIST> GetSceneItemList(string sceneName)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSceneItemList";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new { sceneName = sceneName };
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_SCENE_ITEM_LIST>(req.Data.RequestID); // returns objects
-			return res;
-		}
 		public async Task<STRUCT_GET_GROUP_SCENE_ITEM_LIST> GetGroupSceneItemList(string sceneName)
 		{
 			Request req = new();
@@ -1395,15 +1309,6 @@ namespace COBWEBS_Client
 			var res = GetResponse<string>(req.Data.RequestID, "savedReplayPath");
 			return res;
 		}
-		public async Task<STRUCT_GET_OUTPUT_LIST> GetOutputList()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetOutputList";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_OUTPUT_LIST>(req.Data.RequestID); // returns objects
-			return res;
-		}
 		public async Task<STRUCT_GET_OUTPUT_STATUS> GetOutputStatus(string outputName)
 		{
 			Request req = new();
@@ -1461,15 +1366,6 @@ namespace COBWEBS_Client
 		}
 		#endregion
 			#region STREAM_REQUESTS
-		public async Task<STRUCT_GET_STREAM_STATUS> GetStreamStatus()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetStreamStatus";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_STREAM_STATUS>(req.Data.RequestID);
-			return res;
-		}
 		public async Task<bool> ToggleStream()
 		{
 			Request req = new();
@@ -1500,15 +1396,6 @@ namespace COBWEBS_Client
 		}
 		#endregion
 			#region RECORD_REQUESTS
-		public async Task<STRUCT_GET_RECORD_STATUS> GetRecordStatus()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetRecordStatus";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_RECORD_STATUS>(req.Data.RequestID);
-			return res;
-		}
 		public async void ToggleRecord()
 		{
 			Request req = new();

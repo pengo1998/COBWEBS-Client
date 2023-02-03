@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COBWEBS-Client", "COBWEBS-Client\COBWEBS-Client.csproj", "{B782070A-A5B0-4FC9-9E7F-FA23A2B23ADB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "COBWEBS-Client", "COBWEBS-Client\COBWEBS-Client.csproj", "{B782070A-A5B0-4FC9-9E7F-FA23A2B23ADB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProgram", "TestProgram\TestProgram.csproj", "{901E5A67-5B83-4CBA-912E-BF9515937A84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{B782070A-A5B0-4FC9-9E7F-FA23A2B23ADB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B782070A-A5B0-4FC9-9E7F-FA23A2B23ADB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B782070A-A5B0-4FC9-9E7F-FA23A2B23ADB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{901E5A67-5B83-4CBA-912E-BF9515937A84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{901E5A67-5B83-4CBA-912E-BF9515937A84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{901E5A67-5B83-4CBA-912E-BF9515937A84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{901E5A67-5B83-4CBA-912E-BF9515937A84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

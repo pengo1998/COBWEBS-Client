@@ -10,6 +10,12 @@ namespace COBWEBS_Client.Responses
 	{
 		public string currentProgramSceneName { get; set; }
 		public string currentPreviewSceneName { get; set; }
-		public object[] scenes { get; set; }
+		public STRUCT_GET_SCENE_LIST_SCENES[] scenes { get; set; }
+	}
+
+	public struct STRUCT_GET_SCENE_LIST_SCENES
+	{
+		public int sceneIndex { get; set; }
+		public string sceneName { get; set; }
 	}
 }
