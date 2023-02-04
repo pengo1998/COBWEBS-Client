@@ -48,7 +48,7 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟨SetStreamServiceSettings
   - 🟩GetRecordDirectory
 - 🟨<b>Sources Requests</b>
-  - 🟨GetSourceActive
+  - 🟩GetSourceActive
   - 🟨GetSourceScreenshot
   - 🟨SaveSourceScreenshot
 - 🟩<b>Scenes Requests</b>
@@ -142,20 +142,20 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟨StopOutput
   - 🟨GetOutputSettings
   - 🟨SetOutputSettings
-- 🟨<b>Stream Requests</b>
+- 🟩<b>Stream Requests</b>
   - 🟩GetStreamStatus
-  - 🟨ToggleStream
-  - 🟨StartStream
-  - 🟨StopStream
-  - 🟨SendStreamCaption
-- 🟨<b>Record Requests</b>
+  - 🟩ToggleStream
+  - 🟩StartStream
+  - 🟩StopStream
+  - 🟩SendStreamCaption
+- 🟩<b>Record Requests</b>
   - 🟩GetRecordStatus
-  - 🟨ToggleRecord
-  - 🟨StartRecord
-  - 🟨StopRecord
-  - 🟨ToggleRecordPause
-  - 🟨PauseRecord
-  - 🟨ResumeRecord
+  - 🟩ToggleRecord
+  - 🟩StartRecord
+  - 🟩StopRecord
+  - 🟩ToggleRecordPause
+  - 🟩PauseRecord
+  - 🟩ResumeRecord
 - 🟨<b>Media Inputs Requests</b>
   - 🟨GetMediaInputStatus
   - 🟨SetMediaInputCursor

@@ -121,6 +121,41 @@ namespace COBWEBS_Client
 			var res = GetResponse<STRUCT_GET_SOURCE_ACTIVE>(req.Data.RequestID);
 			return res;
 		}
+		public async Task<string> GetSourceScreenshot(string sourceName, string imageFormat, int? imageWidth = null, int? imageHeight = null, int? imageCompressionQuality = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSourceScreenshot";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sourceName = sourceName,
+				imageFormat = imageFormat,
+				imageCompressionQuality = (imageCompressionQuality ?? -1),
+				imageWidth = imageWidth,
+				imageHeight = imageHeight
+			};
+			SendMessage(req);
+			var res = GetResponse<string>(req.Data.RequestID, "imageData");
+			return res;
+		}
+		public async Task<string> SaveSourceScreenshot(string sourceName, string imageFormat, string imageFilePath, int? imageWidth = null, int? imageHeight = null, int? imageCompressionQuality = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSourceScreenshot";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sourceName = sourceName,
+				imageFormat = imageFormat,
+				imageFilePath = imageFilePath,
+				imageCompressionQuality = imageCompressionQuality,
+				imageWidth = imageWidth,
+				imageHeight = imageHeight
+			};
+			SendMessage(req);
+			var res = GetResponse<string>(req.Data.RequestID, "imageData");
+			return res;
+		}
 		#endregion
 		#region SCENE_REQUESTS
 		public async Task<STRUCT_GET_SCENE_LIST> GetSceneList()
@@ -510,6 +545,34 @@ namespace COBWEBS_Client
 			var res = GetResponse<STRUCT_GET_STREAM_STATUS>(req.Data.RequestID);
 			return res;
 		}
+		public async Task<bool> ToggleStream()
+		{
+			Request req = new();
+			req.Data.RequestType = "toggleStream";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<bool>(req.Data.RequestID, "outputActive");
+			return res;
+		}
+		public async void StartStream()
+		{
+			Request req = new();
+			req.Data.RequestType = "StartStream";
+			SendMessage(req);
+		}
+		public async void StopStream()
+		{
+			Request req = new();
+			req.Data.RequestType = "StopStream";
+			SendMessage(req);
+		}
+		public async void SendStreamCaption(string captionText)
+		{
+			Request req = new();
+			req.Data.RequestType = "SendStreamCaption";
+			req.Data.RequestData = new { captionText = captionText };
+			SendMessage(req);
+		}
 		#endregion
 		#region RECORD_REQUESTS
 		public async Task<STRUCT_GET_RECORD_STATUS> GetRecordStatus()
@@ -520,6 +583,45 @@ namespace COBWEBS_Client
 			SendMessage(req);
 			var res = GetResponse<STRUCT_GET_RECORD_STATUS>(req.Data.RequestID);
 			return res;
+		}
+		public async void ToggleRecord()
+		{
+			Request req = new();
+			req.Data.RequestType = "ToggleRecord";
+			SendMessage(req);
+		}
+		public async void StartRecord()
+		{
+			Request req = new();
+			req.Data.RequestType = "StartRecord";
+			SendMessage(req);
+		}
+		public async Task<string> StopRecord()
+		{
+			Request req = new();
+			req.Data.RequestType = "StopRecord";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<string>(req.Data.RequestID, "outputPath");
+			return res;
+		}
+		public async void ToggleRecordPause()
+		{
+			Request req = new();
+			req.Data.RequestType = "ToggleRecordPause";
+			SendMessage(req);
+		}
+		public async void PauseRecord()
+		{
+			Request req = new();
+			req.Data.RequestType = "PauseRecord";
+			SendMessage(req);
+		}
+		public async void ResumeRecord()
+		{
+			Request req = new();
+			req.Data.RequestType = "ResumeRecord";
+			SendMessage(req);
 		}
 		#endregion
 	}

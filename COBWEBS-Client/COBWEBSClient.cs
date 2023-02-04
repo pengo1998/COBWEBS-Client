@@ -247,8 +247,15 @@ namespace COBWEBS_Client
 				if (res.Value != null)
 				{
 					_pendingMessages.Remove(res.Key);
-					T result = res.Value["d"]["responseData"].ToObject<T>();
-					return result;
+					try
+					{
+						T result = res.Value["d"]["responseData"].ToObject<T>();
+						return result;
+					}
+					catch (Exception)
+					{
+						return default(T);
+					}
 				}
 				cycles++;
 				Thread.Sleep(100);
@@ -264,8 +271,15 @@ namespace COBWEBS_Client
 				if (res.Value != null)
 				{
 					_pendingMessages.Remove(res.Key);
-					T result = res.Value["d"]["responseData"][fieldName].ToObject<T>();
-					return result;
+					try
+					{
+						T result = res.Value["d"]["responseData"][fieldName].ToObject<T>();
+						return result;
+					}
+					catch (Exception)
+					{
+						return default(T);
+					}
 				}
 				cycles++;
 				Thread.Sleep(100);
@@ -281,8 +295,15 @@ namespace COBWEBS_Client
 				if (res.Value != null)
 				{
 					_pendingMessages.Remove(res.Key);
-					var result = res.Value["d"]["responseData"];
-					return result;
+					try
+					{
+						var result = res.Value["d"]["responseData"];
+						return result;
+					}
+					catch (Exception)
+					{
+						return null;
+					}
 				}
 				cycles++;
 				Thread.Sleep(100);
@@ -415,43 +436,6 @@ namespace COBWEBS_Client
 				streamServiceSettings = streamServiceSettings
 			};
 			SendMessage(req);
-		}
-		#endregion
-			#region SOURCE_REQUESTS
-		public async Task<string> GetSourceScreenshot(string sourceName, string imageFormat, int? imageWidth, int? imageHeight, int? imageCompressionQuality)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSourceScreenshot";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sourceName = sourceName,
-				imageFormat = imageFormat,
-				imageCompressionQuality = (imageCompressionQuality ?? -1),
-				imageWidth = (imageWidth ?? null),
-				imageHeight = (imageHeight ?? null)
-			};
-			SendMessage(req);
-			var res = GetResponse<string>(req.Data.RequestID, "imageData");
-			return res;
-		}
-		public async Task<string> SaveSourceScreenshot(string sourceName, string imageFormat, string imageFilePath, int? imageWidth, int? imageHeight, int? imageCompressionQuality)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSourceScreenshot";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sourceName = sourceName,
-				imageFormat = imageFormat,
-				imageFilePath = imageFilePath,
-				imageCompressionQuality = (imageCompressionQuality ?? -1),
-				imageWidth = (imageWidth ?? null),
-				imageHeight = (imageHeight ?? null)
-			};
-			SendMessage(req);
-			var res = GetResponse<string>(req.Data.RequestID, "imageData");
-			return res;
 		}
 		#endregion
 			#region INPUT_REQUESTS
@@ -990,77 +974,6 @@ namespace COBWEBS_Client
 				outputName = outputName,
 				outputSettings = outputSettings
 			};
-			SendMessage(req);
-		}
-		#endregion
-			#region STREAM_REQUESTS
-		public async Task<bool> ToggleStream()
-		{
-			Request req = new();
-			req.Data.RequestType = "ToggleStream";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<bool>(req.Data.RequestID, "outputActive");
-			return res;
-		}
-		public async void StartStream()
-		{
-			Request req = new();
-			req.Data.RequestType = "StartStream";
-			SendMessage(req);
-		}
-		public async void StopStream()
-		{
-			Request req = new();
-			req.Data.RequestType = "ccStopStream";
-			SendMessage(req);
-		}
-		public async void SendStreamCaption(string captionText)
-		{
-			Request req = new();
-			req.Data.RequestType = "SendStreamCaption";
-			req.Data.RequestData = new { captionText = captionText };
-			SendMessage(req);
-		}
-		#endregion
-			#region RECORD_REQUESTS
-		public async void ToggleRecord()
-		{
-			Request req = new();
-			req.Data.RequestType = "ToggleRecord";
-			SendMessage(req);
-		}
-		public async void StartRecord()
-		{
-			Request req = new();
-			req.Data.RequestType = "StartRecord";
-			SendMessage(req);
-		}
-		public async Task<string> StopRecord()
-		{
-			Request req = new();
-			req.Data.RequestType = "StopRecord";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<string>(req.Data.RequestID, "outputPath");
-			return res;
-		}
-		public async void ToggleRecordPause()
-		{
-			Request req = new();
-			req.Data.RequestType = "ToggleRecordPause";
-			SendMessage(req);
-		}
-		public async void PauseRecord()
-		{
-			Request req = new();
-			req.Data.RequestType = "PauseRecord";
-			SendMessage(req);
-		}
-		public async void ResumeRecord()
-		{
-			Request req = new();
-			req.Data.RequestType = "ResumeRecord";
 			SendMessage(req);
 		}
 		#endregion
