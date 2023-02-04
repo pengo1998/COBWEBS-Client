@@ -6,7 +6,7 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
 - [Newtonsoft.Json](https://www.newtonsoft.com/json "Newtonsoft website")
 
 # Plans
-- Minimize dependencies
+- Switch to built in .NET json functionality
 - Fix inconsistent return value types
 - Authentication support
 - Documentation
@@ -21,7 +21,7 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
 🟩 - Finished & Tested
 
 ## Requests
-- 🟨<b>General Requests</b>
+- 🟧<b>General Requests</b>
   - 🟩GetVersion
   - 🟩GetStats
   - 🟥BroadcastCustomEvent
@@ -64,28 +64,28 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟨GetSceneSceneTransitionOverride
   - 🟨SetSceneSceneTransitionOverride
 - 🟨<b>Inputs Requests</b>
-  - 🟨GetInputList
-  - 🟨GetInputKindList
-  - 🟨GetSpecialInputs
+  - 🟩GetInputList
+  - 🟩GetInputKindList
+  - 🟩GetSpecialInputs
   - 🟨CreateInput
   - 🟨RemoveInput
-  - 🟨SetInputName
-  - 🟨GetInputDefaultSettings
-  - 🟨GetInputSettings
-  - 🟨SetInputSettings
-  - 🟨GetInputMute
-  - 🟨SetInputMute
-  - 🟨ToggleInputMute
-  - 🟨GetInputVolume
-  - 🟨SetInputVolume
-  - 🟨GetInputAudioBalance
-  - 🟨SetInputAudioBalance
-  - 🟨GetInputAudioSyncOffset
-  - 🟨SetInputAudioSyncOffset
-  - 🟨GetInputAudioMonitorType
-  - 🟨SetInputAudioMonitorType
-  - 🟨GetInputAudioTracks
-  - 🟨SetInputAudioTracks
+  - 🟩SetInputName
+  - 🟩GetInputDefaultSettings
+  - 🟩GetInputSettings
+  - 🟩SetInputSettings
+  - 🟩GetInputMute
+  - 🟩SetInputMute
+  - 🟩ToggleInputMute
+  - 🟩GetInputVolume
+  - 🟩SetInputVolume
+  - 🟩GetInputAudioBalance
+  - 🟩SetInputAudioBalance
+  - 🟩GetInputAudioSyncOffset
+  - 🟩SetInputAudioSyncOffset
+  - 🟩GetInputAudioMonitorType
+  - 🟩SetInputAudioMonitorType
+  - 🟩GetInputAudioTracks
+  - 🟩SetInputAudioTracks
   - 🟨GetInputPropertiesListPropertyItems
   - 🟨PressInputPropertiesButton
 - 🟨<b>Transitions Requests</b>

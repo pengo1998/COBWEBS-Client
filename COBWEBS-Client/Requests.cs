@@ -132,6 +132,229 @@ namespace COBWEBS_Client
 			var res = GetResponse<STRUCT_GET_SCENE_LIST>(req.Data.RequestID); // Returns object
 			return res;
 		}
+
+		#endregion
+		#region INPUT_REQUESTS
+		public async Task<bool> ToggleInputMute(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "ToggleInputMute";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+			var res = GetResponse<bool>(req.Data.RequestID, "inputMuted");
+			return res;
+		}
+		public async void SetInputMute(string inputName, bool inputMuted)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetInputMute";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				inputMuted = inputMuted
+			};
+			SendMessage(req);
+		}
+		public async Task<bool> GetInputMute(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetInputMute";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+			var res = GetResponse<bool>(req.Data.RequestID, "inputMuted");
+			return res;
+		}
+		public async Task<string[]> GetInputKindList(bool? unversioned = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetInputKindList";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { unversioned = unversioned };
+			SendMessage(req);
+			var res = GetResponse<string[]>(req.Data.RequestID, "inputKinds");
+			return res;
+		}
+		public async Task<STRUCT_GET_SPECIAL_INPUTS> GetSpecialInputs()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSpecialInputs";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_SPECIAL_INPUTS>(req.Data.RequestID);
+			return res;
+		}
+		public async Task<STRUCT_GET_INPUT_LIST> GetInputList(string? inputKind = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetInputList";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { inputKind = inputKind };
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_INPUT_LIST>(req.Data.RequestID); // returns object
+			return res;
+		}
+		public async void SetInputName(string inputName, string newInputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetInputName";
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				newInputName = newInputName
+			};
+			SendMessage(req);
+		}
+		public async Task<int> GetInputAudioSyncOffset(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetInputAudioSyncOffset";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+			var res = GetResponse<int>(req.Data.RequestID, "inputAudioSyncOffset");
+			return res;
+		}
+		public async void SetInputAudioSyncOffset(string inputName, int inputAudioSyncOffset)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetInputAudioSyncOffset";
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				inputAudioSyncOffset = inputAudioSyncOffset
+			};
+			SendMessage(req);
+		}
+		public async Task<double> GetInputAudioBalance(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetInputAudioBalance";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+			var res = GetResponse<double>(req.Data.RequestID, "inputAudioBalance");
+			return res;
+		}
+		public async void SetInputAudioBalance(string inputName, double inputAudioBalance)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetInputAudioBalance";
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				inputAudioBalance = inputAudioBalance
+			};
+			SendMessage(req);
+		}
+		public async Task<AudioMonitorType> GetInputAudioMonitorType(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetInputAudioMonitorType";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+			var res = GetResponse<AudioMonitorType>(req.Data.RequestID, "monitorType");
+			return res;
+		}
+		public async void SetInputAudioMonitorType(string inputName, AudioMonitorType monitorType)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetInputAudioMonitorType";
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				monitorType = monitorType.ToString()
+			};
+			SendMessage(req);
+		}
+		public async Task<STRUCT_GET_INPUT_VOLUME> GetInputVolume(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetInputVolume";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_INPUT_VOLUME>(req.Data.RequestID);
+			return res;
+		}
+		public async void SetInputVolumeMultiplier(string inputName, double inputVolumeMul)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetInputVolume";
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				inputVolumeMul = inputVolumeMul
+			};
+			SendMessage(req);
+		}
+		public async void SetInputVolumeDb(string inputName, double inputVolumeDb)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetInputVolume";
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				inputVolumeDb = inputVolumeDb
+			};
+			SendMessage(req);
+		}
+		public async Task<STRUCT_GET_INPUT_DEFAULT_SETTINGS> GetInputDefaultSettings(string inputKind)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetInputDefaultSettings";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { inputKind = inputKind };
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_INPUT_DEFAULT_SETTINGS>(req.Data.RequestID); // Returns object
+			return res;
+		}
+		public async Task<STRUCT_GET_INPUT_SETTINGS> GetInputSettings(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetInputSettings";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_INPUT_SETTINGS>(req.Data.RequestID); // Returns object
+			return res;
+		}
+		public async void SetInputsettings(string inputName, object inputSettings, bool? overlay = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetInputSettings";
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				inputSettings = inputSettings,
+				overlay = overlay
+			};
+			SendMessage(req);
+		}
+		public async Task<STRUCT_GET_INPUT_AUDIO_TRACKS_ARRAY> GetInputAudioTracks(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetInputAudioTracks";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_INPUT_AUDIO_TRACKS_ARRAY>(req.Data.RequestID, "inputAudioTracks"); // returns object
+			return res;
+		}
+		public async void SetInputAudioTracks(string inputName, STRUCT_GET_INPUT_AUDIO_TRACKS_ARRAY inputAudioTracks)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetInputAudioTracks";
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				inputAudioTracks = inputAudioTracks
+			};
+			SendMessage(req);
+		}
 		#endregion
 		#region TRANSITION_REQUESTS
 		public async Task<STRUCT_GET_SCENE_TRANSITION_LIST> GetSceneTransitionList()

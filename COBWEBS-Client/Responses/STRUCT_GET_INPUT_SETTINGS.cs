@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace COBWEBS_Client.Responses
 {
 	public struct STRUCT_GET_INPUT_SETTINGS
 	{
-		public object inputSettings { get; set; }
+		public JToken inputSettings { get; set; }
 		public string inputKind { get; set; }
 	}
 }
