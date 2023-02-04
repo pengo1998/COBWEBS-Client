@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace COBWEBS_Client
 {
-	public static class Logger
+	internal static class Logger
 	{
 		private static int _logLevel;
 		public static void Init(COBWEBSConfiguration config)

@@ -2,7 +2,7 @@
 
 namespace COBWEBS_Client
 {
-	public class Identify
+	internal class Identify
 	{
 		[JsonProperty("op")]
 		public int OPCode { get; set; } = 1;

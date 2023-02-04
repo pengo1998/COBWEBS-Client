@@ -82,6 +82,10 @@ namespace COBWEBS_Client
 		public event EventHandler StudioModeStatesChanged;
 		public event EventHandler ScreenshotSaved;
 		#endregion
+		/// <summary>
+		/// Inititalizes COBWEBS client and establishes the connection
+		/// </summary>
+		/// <param name="config">Configuration to use for the connection</param>
 		public COBWEBSClient(COBWEBSConfiguration config)
 		{
 			_config = config;
@@ -148,6 +152,9 @@ namespace COBWEBS_Client
 			_messageReceiver = new Thread(new ThreadStart(ReceiveMessages));
 			_messageReceiver.Start();
 		}
+		/// <summary>
+		/// Shutsdown the connection and message receiver thread
+		/// </summary>
 		public void Stop()
 		{
 			_conn.Abort();
