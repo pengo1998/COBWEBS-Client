@@ -30,27 +30,27 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟩TriggerHotkeyByName
   - 🟥TriggerHotkeyByKeySequence
   - 🟩Sleep
-- 🟨<b>Config Requests</b>
-  - 🟨GetPersistentData
-  - 🟨SetPersistentData
-  - 🟨GetSceneCollectionList
-  - 🟨SetCurrentSceneCollection
-  - 🟨CreateSceneCollection
-  - 🟨GetProfileList
+- 🟩<b>Config Requests</b>
+  - 🟩GetPersistentData
+  - 🟩SetPersistentData
+  - 🟩GetSceneCollectionList
+  - 🟩SetCurrentSceneCollection
+  - 🟩CreateSceneCollection
+  - 🟩GetProfileList
   - 🟩SetCurrentProfile
   - 🟩CreateProfile
   - 🟩RemoveProfile
-  - 🟨GetProfileParameter
-  - 🟨SetProfileParameter
+  - 🟩GetProfileParameter
+  - 🟩SetProfileParameter
   - 🟩GetVideoSettings
-  - 🟨SetVideoSettings
+  - 🟩SetVideoSettings
   - 🟩GetStreamServiceSettings
-  - 🟨SetStreamServiceSettings
+  - 🟩SetStreamServiceSettings
   - 🟩GetRecordDirectory
-- 🟨<b>Sources Requests</b>
+- 🟩<b>Sources Requests</b>
   - 🟩GetSourceActive
-  - 🟨GetSourceScreenshot
-  - 🟨SaveSourceScreenshot
+  - 🟩GetSourceScreenshot
+  - 🟩SaveSourceScreenshot
 - 🟩<b>Scenes Requests</b>
   - 🟩GetSceneList
   - 🟩GetGroupList
@@ -67,8 +67,8 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟩GetInputList
   - 🟩GetInputKindList
   - 🟩GetSpecialInputs
-  - 🟨CreateInput
-  - 🟨RemoveInput
+  - 🟩CreateInput
+  - 🟩RemoveInput
   - 🟩SetInputName
   - 🟩GetInputDefaultSettings
   - 🟩GetInputSettings
@@ -88,15 +88,16 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟩SetInputAudioTracks
   - 🟨GetInputPropertiesListPropertyItems
   - 🟨PressInputPropertiesButton
-- 🟨<b>Transitions Requests</b>
-  - 🟨GetTransitionKindList
+- 🟩<b>Transitions Requests</b>
+  - 🟩GetTransitionKindList
   - 🟩GetSceneTransitionList
-  - 🟨GetCurrentSceneTransition
-  - 🟨SetCurrentSceneTransition
-  - 🟨SetCurrentSceneTransitionDuration
-  - 🟨SetCurrentSceneTransitionSettings
-  - 🟨GetCurrentSceneTransitionCursor
-  - 🟨SetTBarPosition
+  - 🟩GetCurrentSceneTransition
+  - 🟩SetCurrentSceneTransition
+  - 🟩SetCurrentSceneTransitionDuration
+  - 🟩SetCurrentSceneTransitionSettings
+  - 🟩GetCurrentSceneTransitionCursor
+  - 🟩TriggerStudioModeTransition
+  - 🟩SetTBarPosition
 - 🟨<b>Filters Requests</b>
   - 🟩GetSourceFilterList
   - 🟩GetSourceFilterDefaultSettings
@@ -161,15 +162,15 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟨SetMediaInputCursor
   - 🟨OffsetMediaInputCursor
   - 🟨TriggerMediaInputAction
-- 🟨<b>Ui Requests</b>
-  - 🟨GetStudioModeEnabled
-  - 🟨SetStudioModeEnabled
-  - 🟨OpenInputPropertiesDialog
-  - 🟨OpenInputFiltersDialog
-  - 🟨OpenInputInteractDialog
-  - 🟨GetMonitorList
-  - 🟨OpenVideoMixProjector
-  - 🟨OpenSourceProjector
+- 🟩<b>Ui Requests</b>
+  - 🟩GetStudioModeEnabled
+  - 🟩SetStudioModeEnabled
+  - 🟩OpenInputPropertiesDialog
+  - 🟩OpenInputFiltersDialog
+  - 🟩OpenInputInteractDialog
+  - 🟩GetMonitorList
+  - 🟩OpenVideoMixProjector
+  - 🟩OpenSourceProjector
 
 ## Events
 	

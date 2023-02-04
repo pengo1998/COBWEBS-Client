@@ -162,27 +162,27 @@ namespace COBWEBS_Client
 			_messageReceiver.Join();
 			_conn.Dispose();
 		}
-		private void ReceiveMessages()
+		private async void ReceiveMessages()
 		{
 			Logger.LogDebug("Message receiver started.");
+			byte[] buffer = new byte[1024];
 			while (_conn.State == WebSocketState.Open)
 			{
-				bool foundEnd = false;
-				byte[] buffer = new byte[32768];
+				WebSocketReceiveResult result = new WebSocketReceiveResult(0, WebSocketMessageType.Close, false);
 				using (MemoryStream ms = new())
 				{
-					while (!foundEnd)
+					while (!result.EndOfMessage)
 					{
-						var res = _conn.ReceiveAsync(buffer, CancellationToken.None);
-						res.Wait();
-						if (res.Result.Count > 0)
+						result = await _conn.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+						if (result.MessageType == WebSocketMessageType.Text)
 						{
-							ms.Write(buffer, 0, buffer.Length);
-							if (res.Result.EndOfMessage == true) foundEnd = true;
+							byte[] readBytes = new byte[result.Count];
+							Array.Copy(buffer, readBytes, result.Count);
+							ms.Write(readBytes, 0, readBytes.Length);
 						}
 					}
-					string result = Encoding.UTF8.GetString(ms.ToArray(), 0, (int)ms.Length);
-					ProcessMessage(result);
+					string res = Encoding.ASCII.GetString(ms.ToArray(), 0, (int)ms.Length);
+					ProcessMessage(res);
 				}
 			}
 			Logger.LogDebug("Message receiver thread closed.");
@@ -248,7 +248,7 @@ namespace COBWEBS_Client
 		private T GetResponse<T>(string requestId)
 		{
 			int cycles = 0;
-			while (cycles < 20)
+			while (cycles < cycles)
 			{
 				var res = _pendingMessages.FirstOrDefault(x => x.Key == requestId);
 				if (res.Value != null)
@@ -261,12 +261,14 @@ namespace COBWEBS_Client
 					}
 					catch (Exception)
 					{
+						Logger.LogWarning($"Error parsing response: {res.Value.ToString()}");
 						return default(T);
 					}
 				}
 				cycles++;
 				Thread.Sleep(100);
 			}
+			Logger.LogWarning("Failed to get a response.");
 			return default(T);
 		}
 		private T GetResponse<T>(string requestId, string fieldName)
@@ -285,18 +287,20 @@ namespace COBWEBS_Client
 					}
 					catch (Exception)
 					{
+						Logger.LogWarning($"Error parsing response: {res.Value.ToString()}");
 						return default(T);
 					}
 				}
 				cycles++;
 				Thread.Sleep(100);
 			}
+			Logger.LogWarning("Failed to get a response.");
 			return default(T);
 		}
 		private JToken GetResponse(string requestId)
 		{
 			int cycles = 0;
-			while (cycles < 20)
+			while (cycles < cycles)
 			{
 				var res = _pendingMessages.FirstOrDefault(x => x.Key == requestId);
 				if (res.Value != null)
@@ -309,12 +313,14 @@ namespace COBWEBS_Client
 					}
 					catch (Exception)
 					{
+						Logger.LogWarning($"Error parsing response: {res.Value.ToString()}");
 						return null;
 					}
 				}
 				cycles++;
 				Thread.Sleep(100);
 			}
+			Logger.LogWarning("Failed to get a response.");
 			return null;
 		}
 		#region UNTESTED_REQUESTS
@@ -336,235 +342,6 @@ namespace COBWEBS_Client
 		public async void TriggerHotkeyByKeySequence()
 		{
 			throw new NotImplementedException();
-		}
-		#endregion
-			#region CONFIG_REQUESTS
-		public async Task<STRUCT_GET_PERSISTENT_DATA> GetPersistentData(DataRealm realm, string slotName)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetPersistentData";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new { realm = realm.ToString(), slotName = slotName };
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_PERSISTENT_DATA>(req.Data.RequestID); // returns object
-			return res;
-		}
-		public async void SetPersistentData(DataRealm realm, string slotName, object slotValue)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetPersistentData";
-			req.Data.RequestData = new
-			{
-				realm = realm.ToString(),
-				slotName = slotName,
-				slotValue = slotValue
-			};
-			SendMessage(req);
-		}
-		public async Task<STRUCT_GET_SCENE_COLLECTION_LIST> GetSceneCollectionList()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSceneCollectionList";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_SCENE_COLLECTION_LIST>(req.Data.RequestID);
-			return res;
-		}
-		public async void SetCurrentSceneCollection(string sceneCollectionName)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetCurrentSceneCollection";
-			req.Data.RequestData = new { sceneCollectionName = sceneCollectionName };
-			SendMessage(req);
-		}
-		public async void CreateSceneCollection(string sceneCollectionName)
-		{
-			Request req = new();
-			req.Data.RequestType = "CreateSceneCollection";
-			req.Data.RequestData = new { sceneCollectionName = sceneCollectionName };
-			SendMessage(req);
-		}
-		public async Task<STRUCT_GET_PROFILE_LIST> GetProfileList()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetProfileList";
-			req.Data.RequestID = GenerateRequestID();
-			var res = GetResponse<STRUCT_GET_PROFILE_LIST>(req.Data.RequestID);
-			return res;
-		}
-		public async Task<STRUCT_GET_PROFILE_PARAMETER> GetProfileParameter(string parameterCategory, string parameterName)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetProfileParameter";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				parameterCategory = parameterCategory,
-				parameterName = parameterName
-			};
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_PROFILE_PARAMETER>(req.Data.RequestID);
-			return res;
-		}
-		public async void SetProfileParameter(string parameterCategory, string parameterName, string parameterValue)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetProfileParameter";
-			req.Data.RequestData = new
-			{
-				parameterCategory = parameterCategory,
-				parameterName = parameterName,
-				parameterValue = parameterValue
-			};
-			SendMessage(req);
-		}
-		public async void SetVideoSettings(double? fpsNumerator, double? fpsDenominator, int? baseWidth, int? baseHeight, int? outputWidth, int? outputHeight)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetVideoSettings";
-			req.Data.RequestData = new
-			{
-				fpsNumerator = (fpsNumerator ?? null),
-				fpsDenominator = (fpsDenominator ?? null),
-				baseWidth = (baseWidth ?? null),
-				baseHeight = (baseHeight ?? null),
-				outputWidth = (outputWidth ?? null),
-				outputHeight = (outputHeight ?? null)
-			};
-			SendMessage(req);
-		}
-		public async void SetStreamServiceSettings(string streamServiceType, object streamServiceSettings)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetStreamServiceSettings";
-			req.Data.RequestData = new
-			{
-				streamServiceType = streamServiceType,
-				streamServiceSettings = streamServiceSettings
-			};
-			SendMessage(req);
-		}
-		#endregion
-			#region INPUT_REQUESTS
-		public async Task<int> CreateInput(string sceneName, string inputName, string inputKind, object? inputSettings, bool? sceneItemEnabled)
-		{
-			Request req = new();
-			req.Data.RequestType = "CreateInput";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				inputName = inputName,
-				inputKind = inputKind,
-				inputSettings = (inputSettings ?? null),
-				sceneItemEnabled = (sceneItemEnabled ?? null)
-			};
-			SendMessage(req);
-			var res = GetResponse<int>(req.Data.RequestID, "sceneItemId");
-			return res;
-		}
-		public async void RemoveInput(string inputName)
-		{
-			Request req = new();
-			req.Data.RequestType = "RemoveInput";
-			req.Data.RequestData = new { inputName = inputName };
-			SendMessage(req);
-		}
-		public async Task<STRUCT_GET_INPUT_PROPERTIES_LIST_PROPERTY_ITEMS> GetInputPropertiesListPropertyItems(string inputName, string propertyName)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetInputPropertiesListPropertyItems";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				inputName = inputName,
-				propertyName = propertyName
-			};
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_INPUT_PROPERTIES_LIST_PROPERTY_ITEMS>(req.Data.RequestID); // returns object array
-			return res;
-		}
-		public async void PressInputPropertiesButton(string inputName, string propertyName)
-		{
-			Request req = new();
-			req.Data.RequestType = "PressInputPropertiesButton";
-			req.Data.RequestData = new
-			{
-				inputName = inputName,
-				propertyName = propertyName
-			};
-			SendMessage(req);
-		}
-		#endregion
-			#region TRANSITIONS_REQUESTS
-		public async Task<string[]> GetTransitionKindList()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetTransitionKindList";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<string[]>(req.Data.RequestID, "transitionKinds");
-			return res;
-		}
-		public async Task<STRUCT_GET_CURRENT_SCENE_TRANSITION> GetCurrentSceneTransition()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetCurrentSceneTransition";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_CURRENT_SCENE_TRANSITION>(req.Data.RequestID); // returns object
-			return res;
-		}
-		public async void SetCurrentSceneTransition(string transitionName)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetCurrentSceneTransition";
-			req.Data.RequestData = new { transitionName = transitionName };
-			SendMessage(req);
-		}
-		public async void SetCurrentSceneTransitionDuration(int transitionDuration)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetcurrentSceneTransitionDuration";
-			req.Data.RequestData = new { transitionDuration = transitionDuration };
-			SendMessage(req);
-		}
-		public async void SetCurrentSceneTransitionSettings(object transitionSettings, bool? overlay)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetcurrentSceneTransitionSettings";
-			req.Data.RequestData = new
-			{
-				transitionSettings = transitionSettings,
-				overlay = (overlay ?? null)
-			};
-			SendMessage(req);
-		}
-		public async Task<double> GetCurrentSceneTransitionCursor()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetCurrentSceneTransitionCursor";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<double>(req.Data.RequestID, "transitionCursor");
-			return res;
-		}
-		public async void TriggerStudioModeTransition()
-		{
-			Request req = new();
-			req.Data.RequestType = "TriggerStudioModeTransition";
-			SendMessage(req);
-		}
-		public async void SetTBarPosition(double position, bool? release)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetTBarPosition";
-			req.Data.RequestData = new
-			{
-				position = position,
-				release = (release ?? null)
-			};
-			SendMessage(req);
 		}
 		#endregion
 			#region FILTER_REQUESTS
@@ -1025,66 +802,6 @@ namespace COBWEBS_Client
 			{
 				inputName = inputName,
 				mediaAction = mediaAction
-			};
-			SendMessage(req);
-		}
-		#endregion
-			#region UI_REQUESTS
-		public async Task<bool> GetStudioModeEnabled()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetStudioModeEnabled";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<bool>(req.Data.RequestID, "studioModeEnabled");
-			return res;
-		}
-		public async void SetStudioModeEnabled(bool studioModeEnabled)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetStudioModeEnabled";
-			req.Data.RequestData = new { studioModeEnabled = studioModeEnabled };
-			SendMessage(req);
-		}
-		public async void OpenInputPropertiesDialog(string inputName)
-		{
-			Request req = new();
-			req.Data.RequestType = "OpenInputPropertiesDialog";
-			req.Data.RequestData = new { inputName = inputName };
-			SendMessage(req);
-		}
-		public async void OpenInputFiltersDialog(string inputName)
-		{
-			Request req = new();
-			req.Data.RequestType = "OpenInputFiltersDialog";
-			req.Data.RequestData = new { inputName = inputName };
-			SendMessage(req);
-		}
-		public async void OpenInputInteractDialog(string inputName)
-		{
-			Request req = new();
-			req.Data.RequestType = "OpenInputInteractDialog";
-			req.Data.RequestData = new { inputName = inputName };
-			SendMessage(req);
-		}
-		public async Task<STRUCT_GET_MONITOR_LIST> GetMonitorList()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetMonitorList";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_MONITOR_LIST>(req.Data.RequestID);
-			return res;
-		}
-		public async void OpenSourceProjector(string sourceName, int? monitorIndex, string? projectorGeometry)
-		{
-			Request req = new();
-			req.Data.RequestType = "OpenSourceProjector";
-			req.Data.RequestData = new
-			{
-				sourceName = sourceName,
-				monitorIndex = (monitorIndex ?? null),
-				projectorGeometry = (projectorGeometry ?? null)
 			};
 			SendMessage(req);
 		}

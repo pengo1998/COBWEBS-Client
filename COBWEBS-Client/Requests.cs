@@ -157,6 +157,166 @@ namespace COBWEBS_Client
 			var res = GetResponse<string>(req.Data.RequestID, "recordDirectory");
 			return res;
 		}
+		/// <summary>
+		/// Returns persistent data from specified slot
+		/// </summary>
+		/// <param name="realm">Where to load data from</param>
+		/// <param name="slotName">Slot name to load data from</param>
+		/// <returns></returns>
+		public async Task<object> GetPersistentData(DataRealm realm, string slotName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetPersistentData";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { realm = realm.ToString(), slotName = slotName };
+			SendMessage(req);
+			var res = GetResponse<object>(req.Data.RequestID, "slotValue"); // returns object
+			return res;
+		}
+		/// <summary>
+		/// Saves data to a persistent data slot
+		/// </summary>
+		/// <param name="realm">Where to set data</param>
+		/// <param name="slotName">Slot to store data in</param>
+		/// <param name="slotValue">Value to store</param>
+		public async void SetPersistentData(DataRealm realm, string slotName, object slotValue)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetPersistentData";
+			req.Data.RequestData = new
+			{
+				realm = realm.ToString(),
+				slotName = slotName,
+				slotValue = slotValue
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Returns a list of scene collections
+		/// </summary>
+		/// <returns></returns>
+		public async Task<STRUCT_GET_SCENE_COLLECTION_LIST> GetSceneCollectionList()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSceneCollectionList";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_SCENE_COLLECTION_LIST>(req.Data.RequestID);
+			return res;
+		}
+		/// <summary>
+		/// Sets current scene collection
+		/// </summary>
+		/// <param name="sceneCollectionName">Name of scene collection to load</param>
+		public async void SetCurrentSceneCollection(string sceneCollectionName)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetCurrentSceneCollection";
+			req.Data.RequestData = new { sceneCollectionName = sceneCollectionName };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Creates a new scene collection and switches to it
+		/// </summary>
+		/// <param name="sceneCollectionName">Name to give the new collection</param>
+		public async void CreateSceneCollection(string sceneCollectionName)
+		{
+			Request req = new();
+			req.Data.RequestType = "CreateSceneCollection";
+			req.Data.RequestData = new { sceneCollectionName = sceneCollectionName };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Returns a list of profiles
+		/// </summary>
+		/// <returns></returns>
+		public async Task<STRUCT_GET_PROFILE_LIST> GetProfileList()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetProfileList";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_PROFILE_LIST>(req.Data.RequestID);
+			return res;
+		}
+		/// <summary>
+		/// Gets a parameter from the profile
+		/// </summary>
+		/// <param name="parameterCategory">Category to get parameter from</param>
+		/// <param name="parameterName">Parameter name to retrieve</param>
+		/// <returns></returns>
+		public async Task<STRUCT_GET_PROFILE_PARAMETER> GetProfileParameter(string parameterCategory, string parameterName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetProfileParameter";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				parameterCategory = parameterCategory,
+				parameterName = parameterName
+			};
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_PROFILE_PARAMETER>(req.Data.RequestID);
+			return res;
+		}
+		/// <summary>
+		/// Changes a profile parameter value
+		/// </summary>
+		/// <param name="parameterCategory">Category to edit a parameter in</param>
+		/// <param name="parameterName">Parameter to change</param>
+		/// <param name="parameterValue">New parameter value</param>
+		public async void SetProfileParameter(string parameterCategory, string parameterName, string parameterValue)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetProfileParameter";
+			req.Data.RequestData = new
+			{
+				parameterCategory = parameterCategory,
+				parameterName = parameterName,
+				parameterValue = parameterValue
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Sets video settings
+		/// </summary>
+		/// <param name="fpsNumerator"></param>
+		/// <param name="fpsDenominator"></param>
+		/// <param name="baseWidth">Recording width</param>
+		/// <param name="baseHeight">Recording height</param>
+		/// <param name="outputWidth">Scaled width</param>
+		/// <param name="outputHeight">Scaled height</param>
+		public async void SetVideoSettings(double? fpsNumerator = null, double? fpsDenominator = null, int? baseWidth = null, int? baseHeight = null, int? outputWidth = null, int? outputHeight = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetVideoSettings";
+			req.Data.RequestData = new
+			{
+				fpsNumerator = fpsNumerator,
+				fpsDenominator = fpsDenominator,
+				baseWidth = baseWidth,
+				baseHeight = baseHeight,
+				outputWidth = outputWidth,
+				outputHeight = outputHeight
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Sets stream service settings
+		/// </summary>
+		/// <param name="streamServiceType">Service you are streaming to</param>
+		/// <param name="streamServiceSettings">Generic object with service specific settings</param>
+		public async void SetStreamServiceSettings(string streamServiceType, object streamServiceSettings)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetStreamServiceSettings";
+			req.Data.RequestData = new
+			{
+				streamServiceType = streamServiceType,
+				streamServiceSettings = streamServiceSettings
+			};
+			SendMessage(req);
+		}
 		#endregion
 		#region SOURCE_REQUESTS
 		/// <summary>
@@ -174,6 +334,15 @@ namespace COBWEBS_Client
 			var res = GetResponse<STRUCT_GET_SOURCE_ACTIVE>(req.Data.RequestID);
 			return res;
 		}
+		/// <summary>
+		/// Takes a screenshot and returns the result as a Base64 encoded string
+		/// </summary>
+		/// <param name="sourceName">Source to screenshot</param>
+		/// <param name="imageFormat">Image format to return</param>
+		/// <param name="imageWidth">Scaled width of screenshot</param>
+		/// <param name="imageHeight">Scaled height of screenshot</param>
+		/// <param name="imageCompressionQuality">Compression quality to use</param>
+		/// <returns></returns>
 		public async Task<string> GetSourceScreenshot(string sourceName, string imageFormat, int? imageWidth = null, int? imageHeight = null, int? imageCompressionQuality = null)
 		{
 			Request req = new();
@@ -191,11 +360,20 @@ namespace COBWEBS_Client
 			var res = GetResponse<string>(req.Data.RequestID, "imageData");
 			return res;
 		}
-		public async Task<string> SaveSourceScreenshot(string sourceName, string imageFormat, string imageFilePath, int? imageWidth = null, int? imageHeight = null, int? imageCompressionQuality = null)
+		/// <summary>
+		/// Takes a screenshot and saves it to specified file
+		/// </summary>
+		/// <param name="sourceName">Source to screenshot</param>
+		/// <param name="imageFormat">Format to save screenshot as</param>
+		/// <param name="imageFilePath">Where to save the file</param>
+		/// <param name="imageWidth">Scaled width of the screenshot</param>
+		/// <param name="imageHeight">Scaled height of the screensht</param>
+		/// <param name="imageCompressionQuality">Compression quality of the image</param>
+		/// <returns></returns>
+		public async void SaveSourceScreenshot(string sourceName, string imageFormat, string imageFilePath, int? imageWidth = null, int? imageHeight = null, int? imageCompressionQuality = null)
 		{
 			Request req = new();
-			req.Data.RequestType = "GetSourceScreenshot";
-			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestType = "SaveSourceScreenshot";
 			req.Data.RequestData = new
 			{
 				sourceName = sourceName,
@@ -206,8 +384,6 @@ namespace COBWEBS_Client
 				imageHeight = imageHeight
 			};
 			SendMessage(req);
-			var res = GetResponse<string>(req.Data.RequestID, "imageData");
-			return res;
 		}
 		#endregion
 		#region SCENE_REQUESTS
@@ -684,6 +860,80 @@ namespace COBWEBS_Client
 			};
 			SendMessage(req);
 		}
+		/// <summary>
+		/// Creates a new input with specified settings and returns its sceneItemId
+		/// </summary>
+		/// <param name="sceneName">Scene to put the new input into</param>
+		/// <param name="inputName">What to name the new input</param>
+		/// <param name="inputKind">What kind of input to create</param>
+		/// <param name="inputSettings">Generic object that contains settings data appropriate to the specified kind</param>
+		/// <param name="sceneItemEnabled">Whether to enable the scene on creation (enabled by default)</param>
+		/// <returns></returns>
+		public async Task<int> CreateInput(string sceneName, string inputName, string inputKind, object? inputSettings = null, bool? sceneItemEnabled = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "CreateInput";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				inputName = inputName,
+				inputKind = inputKind,
+				inputSettings = inputSettings,
+				sceneItemEnabled = sceneItemEnabled
+			};
+			SendMessage(req);
+			var res = GetResponse<int>(req.Data.RequestID, "sceneItemId");
+			return res;
+		}
+		/// <summary>
+		/// Deletes the specified input
+		/// </summary>
+		/// <param name="inputName">Input to be deleted</param>
+		public async void RemoveInput(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "RemoveInput";
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Returns a list from an input's properties
+		/// Use when an input provides a dynamic selectable list of items
+		/// </summary>
+		/// <param name="inputName">Input to get data from</param>
+		/// <param name="propertyName">Property to get</param>
+		/// <returns></returns>
+		public async Task<STRUCT_GET_INPUT_PROPERTIES_LIST_PROPERTY_ITEMS> GetInputPropertiesListPropertyItems(string inputName, string propertyName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetInputPropertiesListPropertyItems";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				propertyName = propertyName
+			};
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_INPUT_PROPERTIES_LIST_PROPERTY_ITEMS>(req.Data.RequestID); // returns object array
+			return res;
+		}
+		/// <summary>
+		/// Presses a button in the properties of the specified input
+		/// </summary>
+		/// <param name="inputName">Input to act on</param>
+		/// <param name="propertyName">Property name of the button to press</param>
+		public async void PressInputPropertiesButton(string inputName, string propertyName)
+		{
+			Request req = new();
+			req.Data.RequestType = "PressInputPropertiesButton";
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				propertyName = propertyName
+			};
+			SendMessage(req);
+		}
 		#endregion
 		#region TRANSITION_REQUESTS
 		/// <summary>
@@ -698,6 +948,108 @@ namespace COBWEBS_Client
 			SendMessage(req);
 			var res = GetResponse<STRUCT_GET_SCENE_TRANSITION_LIST>(req.Data.RequestID); // returns object array
 			return res;
+		}
+		/// <summary>
+		/// Returns a list of transition types
+		/// </summary>
+		/// <returns></returns>
+		public async Task<string[]> GetTransitionKindList()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetTransitionKindList";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<string[]>(req.Data.RequestID, "transitionKinds");
+			return res;
+		}
+		/// <summary>
+		/// Returns current scene transition and it's settings
+		/// </summary>
+		/// <returns></returns>
+		public async Task<STRUCT_GET_CURRENT_SCENE_TRANSITION> GetCurrentSceneTransition()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetCurrentSceneTransition";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_CURRENT_SCENE_TRANSITION>(req.Data.RequestID); // returns object
+			return res;
+		}
+		/// <summary>
+		/// Sets the current scene transition type - untested
+		/// </summary>
+		/// <param name="transitionName"></param>
+		public async void SetCurrentSceneTransition(string transitionName)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetCurrentSceneTransition";
+			req.Data.RequestData = new { transitionName = transitionName };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Sets the scene transition duration
+		/// </summary>
+		/// <param name="transitionDuration">Duration in miliseconds</param>
+		public async void SetCurrentSceneTransitionDuration(int transitionDuration)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetcurrentSceneTransitionDuration";
+			req.Data.RequestData = new { transitionDuration = transitionDuration };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Triggers the current studio mode transition
+		/// </summary>
+		public async void TriggerStudioModeTransition()
+		{
+			Request req = new();
+			req.Data.RequestType = "TriggerStudioModeTransition";
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Sets the current scene transition's settings
+		/// </summary>
+		/// <param name="transitionSettings">Settings to apply</param>
+		/// <param name="overlay">whether to overlay existing settings or reset to default and then apply</param>
+		public async void SetCurrentSceneTransitionSettings(object transitionSettings, bool? overlay = false)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetcurrentSceneTransitionSettings";
+			req.Data.RequestData = new
+			{
+				transitionSettings = transitionSettings,
+				overlay = overlay
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Returns the current 
+		/// </summary>
+		/// <returns></returns>
+		public async Task<double> GetCurrentSceneTransitionCursor()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetCurrentSceneTransitionCursor";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<double>(req.Data.RequestID, "transitionCursor");
+			return res;
+		}
+		/// <summary>
+		/// Sets the transition bar position
+		/// </summary>
+		/// <param name="position">0-1 process </param>
+		/// <param name="release">Whether to release the slider</param>
+		public async void SetTBarPosition(double position, bool? release)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetTBarPosition";
+			req.Data.RequestData = new
+			{
+				position = position,
+				release = (release ?? null)
+			};
+			SendMessage(req);
 		}
 		#endregion
 		#region FILTER_REQUESTS
@@ -891,6 +1243,114 @@ namespace COBWEBS_Client
 		{
 			Request req = new();
 			req.Data.RequestType = "ResumeRecord";
+			SendMessage(req);
+		}
+		#endregion
+		#region UI_REQUESTS
+		/// <summary>
+		/// Returns whether studio mode is enabled
+		/// </summary>
+		/// <returns></returns>
+		public async Task<bool> GetStudioModeEnabled()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetStudioModeEnabled";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<bool>(req.Data.RequestID, "studioModeEnabled");
+			return res;
+		}
+		/// <summary>
+		/// Sets whether studio mode is enabled or not
+		/// </summary>
+		/// <param name="studioModeEnabled"></param>
+		public async void SetStudioModeEnabled(bool studioModeEnabled)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetStudioModeEnabled";
+			req.Data.RequestData = new { studioModeEnabled = studioModeEnabled };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Opens the properties dialog for the specified input
+		/// </summary>
+		/// <param name="inputName">Input to open dialog for</param>
+		public async void OpenInputPropertiesDialog(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "OpenInputPropertiesDialog";
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Opens filters for specified input
+		/// </summary>
+		/// <param name="inputName">Input to open filter dialog for</param>
+		public async void OpenInputFiltersDialog(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "OpenInputFiltersDialog";
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Opens interaction menu for specified input
+		/// </summary>
+		/// <param name="inputName">Input to open interaction dialog for</param>
+		public async void OpenInputInteractDialog(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "OpenInputInteractDialog";
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Get a list of connected displays
+		/// </summary>
+		/// <returns></returns>
+		public async Task<STRUCT_MONITOR_INFO[]> GetMonitorList()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetMonitorList";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<STRUCT_MONITOR_INFO[]>(req.Data.RequestID, "monitors");
+			return res;
+		}
+		/// <summary>
+		/// Opens a projector for a source
+		/// </summary>
+		/// <param name="sourceName">Source to open projector for</param>
+		/// <param name="monitorIndex">Monitor index</param>
+		/// <param name="projectorGeometry">Qt Base64 encoded size and position data</param>
+		public async void OpenSourceProjector(string sourceName, int? monitorIndex = null, string? projectorGeometry = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "OpenSourceProjector";
+			req.Data.RequestData = new
+			{
+				sourceName = sourceName,
+				monitorIndex = monitorIndex,
+				projectorGeometry = projectorGeometry
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Opens a projector for a specific output video mix
+		/// </summary>
+		/// <param name="videoMixType">Type of mix to open</param>
+		/// <param name="monitorIndex">Index of monitor</param>
+		/// <param name="projectorGeometry">Qt Base64 encoded size and position</param>
+		public async void OpenVideoMixProjector(MixType videoMixType, int? monitorIndex = null, string? projectorGeometry = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "OpenVideoMixProjector";
+			req.Data.RequestData = new
+			{
+				videoMixType = videoMixType.ToString(),
+				monitorIndex = monitorIndex,
+				projectorGeometry = projectorGeometry
+			};
 			SendMessage(req);
 		}
 		#endregion
