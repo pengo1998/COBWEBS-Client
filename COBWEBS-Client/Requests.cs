@@ -132,7 +132,95 @@ namespace COBWEBS_Client
 			var res = GetResponse<STRUCT_GET_SCENE_LIST>(req.Data.RequestID); // Returns object
 			return res;
 		}
-
+		public async Task<string> GetCurrentProgramScene()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetCurrentProgramScene";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<string>(req.Data.RequestID, "currentProgramSceneName");
+			return res;
+		}
+		public async void SetCurrentProgramScene(string sceneName)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetCurrentProgramScene";
+			req.Data.RequestData = new { sceneName = sceneName };
+			SendMessage(req);
+		}
+		public async Task<string> GetCurrentPreviewScene()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetCurrentPreviewScene";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<string>(req.Data.RequestID, "currentPreviewSceneName");
+			return res;
+		}
+		public async void SetCurrentPreviewScene(string sceneName)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetCurrentPreviewScene";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { sceneName = sceneName };
+			SendMessage(req);
+		}
+		public async void CreateScene(string sceneName)
+		{
+			Request req = new();
+			req.Data.RequestType = "CreateScene";
+			req.Data.RequestData = new { sceneName = sceneName };
+			SendMessage(req);
+		}
+		public async void RemoveScene(string sceneName)
+		{
+			Request req = new();
+			req.Data.RequestType = "RemoveScene";
+			req.Data.RequestData = new { sceneName = sceneName };
+			SendMessage(req);
+		}
+		public async void SetSceneName(string sceneName, string newSceneName)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetSceneName";
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				newSceneName = newSceneName
+			};
+			SendMessage(req);
+		}
+		public async Task<STRUCT_GET_SCENE_SCENE_TRANSITION_OVERRIDE> GetSceneSceneTransitionOverride(string sceneName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSceneSceneTransitionOverride";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { sceneName = sceneName };
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_SCENE_SCENE_TRANSITION_OVERRIDE>(req.Data.RequestID);
+			return res;
+		}
+		public async void SetSceneSceneTransitionOverride(string sceneName, string? transitionName = null, int? transitionDuration = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetSceneSceneTransitionOverride";
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				transitionName = transitionName,
+				transitionDuration = transitionDuration
+			};
+			SendMessage(req);
+		}
+		public async Task<string[]> GetGroupList()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetGroupList";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<string[]>(req.Data.RequestID, "groups");
+			return res;
+		}
 		#endregion
 		#region INPUT_REQUESTS
 		public async Task<bool> ToggleInputMute(string inputName)

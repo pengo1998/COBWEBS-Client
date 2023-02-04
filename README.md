@@ -51,18 +51,18 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟨GetSourceActive
   - 🟨GetSourceScreenshot
   - 🟨SaveSourceScreenshot
-- 🟨<b>Scenes Requests</b>
+- 🟩<b>Scenes Requests</b>
   - 🟩GetSceneList
-  - 🟨GetGroupList
-  - 🟨GetCurrentProgramScene
-  - 🟨SetCurrentProgramScene
-  - 🟨GetCurrentPreviewScene
-  - 🟨SetCurrentPreviewScene
-  - 🟨CreateScene
-  - 🟨RemoveScene
-  - 🟨SetSceneName
-  - 🟨GetSceneSceneTransitionOverride
-  - 🟨SetSceneSceneTransitionOverride
+  - 🟩GetGroupList
+  - 🟩GetCurrentProgramScene
+  - 🟩SetCurrentProgramScene
+  - 🟩GetCurrentPreviewScene
+  - 🟩SetCurrentPreviewScene
+  - 🟩CreateScene
+  - 🟩RemoveScene
+  - 🟩SetSceneName
+  - 🟩GetSceneSceneTransitionOverride
+  - 🟩SetSceneSceneTransitionOverride
 - 🟨<b>Inputs Requests</b>
   - 🟩GetInputList
   - 🟩GetInputKindList
