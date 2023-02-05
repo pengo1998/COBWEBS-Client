@@ -7,11 +7,6 @@ using System.Threading.Tasks;
 
 namespace COBWEBS_Client.Responses
 {
-	public struct STRUCT_GET_SOURCE_FILTER_LIST
-	{
-		public STRUCT_GET_SOURCE_FILTER_LIST_FILTERS[] filters { get; set; }
-	}
-
 	public struct STRUCT_GET_SOURCE_FILTER_LIST_FILTERS
 	{
 		public bool filterEnabled { get; set; }

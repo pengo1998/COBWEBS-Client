@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,6 @@ namespace COBWEBS_Client.Responses
 		public bool filterEnabled { get; set; }
 		public int filterIndex { get; set; }
 		public string filterKind { get; set; }
-		public object filterSettings { get; set; }
+		public JToken filterSettings { get; set; }
 	}
 }

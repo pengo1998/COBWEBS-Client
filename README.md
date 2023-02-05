@@ -5,6 +5,11 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
 # Dependencies
 - [Newtonsoft.Json](https://www.newtonsoft.com/json "Newtonsoft website")
 
+# Contents
+- [Plans](#plans)
+- [Feature Status](#feature-status)
+- [Getting Started](#getting-started)
+
 # Plans
 - Switch to built in .NET json functionality
 - Fix inconsistent return value types
@@ -98,33 +103,33 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟩GetCurrentSceneTransitionCursor
   - 🟩TriggerStudioModeTransition
   - 🟩SetTBarPosition
-- 🟨<b>Filters Requests</b>
+- 🟩<b>Filters Requests</b>
   - 🟩GetSourceFilterList
   - 🟩GetSourceFilterDefaultSettings
-  - 🟨CreateSourceFilter
-  - 🟨RemoveSourceFilter
-  - 🟨SetSourceFilterName
-  - 🟨GetSourceFilter
-  - 🟨SetSourceFilterIndex
-  - 🟨SetSourceFilterSettings
-  - 🟨SetSourceFilterEnabled
-- 🟨<b>Scene Items Requests</b>
+  - 🟩CreateSourceFilter
+  - 🟩RemoveSourceFilter
+  - 🟩SetSourceFilterName
+  - 🟩GetSourceFilter
+  - 🟩SetSourceFilterIndex
+  - 🟩SetSourceFilterSettings
+  - 🟩SetSourceFilterEnabled
+- 🟩<b>Scene Items Requests</b>
   - 🟩GetSceneItemList
-  - 🟨GetGroupSceneItemList
-  - 🟨GetSceneItemId
-  - 🟨CreateSceneItem
-  - 🟨RemoveSceneItem
-  - 🟨DuplicateSceneItem
-  - 🟨GetSceneItemTransform
-  - 🟨SetSceneItemTransform
-  - 🟨GetSceneItemEnabled
-  - 🟨SetSceneItemEnabled
-  - 🟨GetSceneItemLocked
-  - 🟨SetSceneItemLocked
-  - 🟨GetSceneItemIndex
-  - 🟨SetSceneItemIndex
-  - 🟨GetSceneItemBlendMode
-  - 🟨SetSceneItemBlendMode
+  - 🟩GetGroupSceneItemList
+  - 🟩GetSceneItemId
+  - 🟩CreateSceneItem
+  - 🟩RemoveSceneItem
+  - 🟩DuplicateSceneItem
+  - 🟩GetSceneItemTransform
+  - 🟩SetSceneItemTransform
+  - 🟩GetSceneItemEnabled
+  - 🟩SetSceneItemEnabled
+  - 🟩GetSceneItemLocked
+  - 🟩SetSceneItemLocked
+  - 🟩GetSceneItemIndex
+  - 🟩SetSceneItemIndex
+  - 🟩GetSceneItemBlendMode
+  - 🟩SetSceneItemBlendMode
 - 🟨<b>Outputs Requests</b>
   - 🟨GetVirtualCamStatus
   - 🟨ToggleVirtualCam
@@ -157,11 +162,11 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟩ToggleRecordPause
   - 🟩PauseRecord
   - 🟩ResumeRecord
-- 🟨<b>Media Inputs Requests</b>
-  - 🟨GetMediaInputStatus
-  - 🟨SetMediaInputCursor
-  - 🟨OffsetMediaInputCursor
-  - 🟨TriggerMediaInputAction
+- 🟩<b>Media Inputs Requests</b>
+  - 🟩GetMediaInputStatus
+  - 🟩SetMediaInputCursor
+  - 🟩OffsetMediaInputCursor
+  - 🟩TriggerMediaInputAction
 - 🟩<b>Ui Requests</b>
   - 🟩GetStudioModeEnabled
   - 🟩SetStudioModeEnabled
@@ -238,3 +243,22 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
 - 🟥<b>Ui Events</b>
   - 🟥StudioModeStateChanged
   - 🟥ScreenshotSaved
+
+
+# Getting Started
+```C#
+COBWEBSConfiguration config = new() {
+	UseAuth = false,
+	IP = "localhost",
+	LogLevel = LogLevel.Information,
+	Port = 4444,
+	Password = "",
+	EventSub = EventSubscriptions.General | EventSubscriptions.Config
+};
+COBWEBSClient client = new(config);
+
+var res = await client.GetVersion();
+Console.WriteLine($"You are on a {res.platform} computer.");
+
+client.Stop();
+```

@@ -615,14 +615,14 @@ namespace COBWEBS_Client
 		/// </summary>
 		/// <param name="inputKind">Input kind to return</param>
 		/// <returns></returns>
-		public async Task<STRUCT_GET_INPUT_LIST> GetInputList(string? inputKind = null)
+		public async Task<JToken[]> GetInputList(string? inputKind = null)
 		{
 			Request req = new();
 			req.Data.RequestType = "GetInputList";
 			req.Data.RequestID = GenerateRequestID();
 			req.Data.RequestData = new { inputKind = inputKind };
 			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_INPUT_LIST>(req.Data.RequestID); // returns object
+			var res = GetResponse<JToken[]>(req.Data.RequestID, "inputs");
 			return res;
 		}
 		/// <summary>
@@ -786,14 +786,14 @@ namespace COBWEBS_Client
 		/// </summary>
 		/// <param name="inputKind">Input kind to get default settings for</param>
 		/// <returns></returns>
-		public async Task<STRUCT_GET_INPUT_DEFAULT_SETTINGS> GetInputDefaultSettings(string inputKind)
+		public async Task<JToken> GetInputDefaultSettings(string inputKind)
 		{
 			Request req = new();
 			req.Data.RequestType = "GetInputDefaultSettings";
 			req.Data.RequestID = GenerateRequestID();
 			req.Data.RequestData = new { inputKind = inputKind };
 			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_INPUT_DEFAULT_SETTINGS>(req.Data.RequestID); // Returns object
+			var res = GetResponse<JToken>(req.Data.RequestID, "defaultInputSettings");
 			return res;
 		}
 		/// <summary>
@@ -1058,14 +1058,14 @@ namespace COBWEBS_Client
 		/// </summary>
 		/// <param name="sourceName">Source to get filters for</param>
 		/// <returns></returns>
-		public async Task<STRUCT_GET_SOURCE_FILTER_LIST> GetSourceFilterList(string sourceName)
+		public async Task<STRUCT_GET_SOURCE_FILTER_LIST_FILTERS[]> GetSourceFilterList(string sourceName)
 		{
 			Request req = new();
 			req.Data.RequestType = "GetSourceFilterList";
 			req.Data.RequestID = GenerateRequestID();
 			req.Data.RequestData = new { sourceName = sourceName };
 			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_SOURCE_FILTER_LIST>(req.Data.RequestID); // returns object
+			var res = GetResponse<STRUCT_GET_SOURCE_FILTER_LIST_FILTERS[]>(req.Data.RequestID, "filters"); // returns object
 			return res;
 		}
 		/// <summary>
@@ -1082,6 +1082,132 @@ namespace COBWEBS_Client
 			SendMessage(req);
 			var res = GetResponse(req.Data.RequestID); // return object
 			return res;
+		}
+		/// <summary>
+		/// Gets a filter by name from the specified source
+		/// </summary>
+		/// <param name="sourceName">Source to get a filter from</param>
+		/// <param name="filterName">Name of the filter to grab</param>
+		/// <returns></returns>
+		public async Task<STRUCT_GET_SOURCE_FILTER> GetSourceFilter(string sourceName, string filterName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSourceFilter";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sourceName = sourceName,
+				filterName = filterName
+			};
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_SOURCE_FILTER>(req.Data.RequestID); // returns object
+			return res;
+		}
+		/// <summary>
+		/// Sets whether a source's specified filter is enabled or not
+		/// </summary>
+		/// <param name="sourceName">Source to alter the filter on</param>
+		/// <param name="filterName">Filter to be altered</param>
+		/// <param name="filterEnabled">Whether the filter should be enabled or not</param>
+		public async void SetSourceFilterEnabled(string sourceName, string filterName, bool filterEnabled)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetSourceFilterEnabled";
+			req.Data.RequestData = new
+			{
+				sourceName = sourceName,
+				filterName = filterName,
+				filterEnabled = filterEnabled
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Sets the source's filter position in the list
+		/// </summary>
+		/// <param name="sourceName">Source to modify filter on</param>
+		/// <param name="filterName">Filter to be moved</param>
+		/// <param name="filterIndex">Where to place the filter</param>
+		public async void SetSourceFilterIndex(string sourceName, string filterName, int filterIndex)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetSourceFilterIndex";
+			req.Data.RequestData = new
+			{
+				sourceName = sourceName,
+				filterName = filterName,
+				filterIndex = filterIndex
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Creates a new filter of specified type
+		/// </summary>
+		/// <param name="sourceName">Source to create a filter on</param>
+		/// <param name="filterName">What the new filter should be named</param>
+		/// <param name="filterKind">Type of filter to create</param>
+		/// <param name="filterSettings">Generic object containing filter settings</param>
+		public async void CreateSourceFilter(string sourceName, string filterName, string filterKind, object? filterSettings = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "CreateSourceFilter";
+			req.Data.RequestData = new
+			{
+				sourceName = sourceName,
+				filterName = filterName,
+				filterKind = filterKind,
+				filterSettings = filterSettings
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Deletes a specified filter
+		/// </summary>
+		/// <param name="sourceName">Source to delete a filter from</param>
+		/// <param name="filterName">Name of the filter to delete</param>
+		public async void RemoveSourceFilter(string sourceName, string filterName)
+		{
+			Request req = new();
+			req.Data.RequestType = "RemoveSourceFilter";
+			req.Data.RequestData = new { sourceName = sourceName, filterName = filterName };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Changes the specified filter's name
+		/// </summary>
+		/// <param name="sourceName">Source containing the filter</param>
+		/// <param name="filterName">Current name of the filter</param>
+		/// <param name="newFilterName">New name for the filter</param>
+		public async void SetSourceFilterName(string sourceName, string filterName, string newFilterName)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetSourceFilterName";
+			req.Data.RequestData = new
+			{
+				sourceName = sourceName,
+				filterName = filterName,
+				newFilterName = newFilterName
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Set a filter's settings
+		/// </summary>
+		/// <param name="sourceName">Source to modify</param>
+		/// <param name="filterName">Filter to modify</param>
+		/// <param name="filterSettings">Generic object containing filter's settings</param>
+		/// <param name="overlay">Whether to overlay on existing settings or reset to default and then apply</param>
+		public async void SetSourceFilterSettings(string sourceName, string filterName, object filterSettings, bool? overlay)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetSourceFilterSettings";
+			req.Data.RequestData = new
+			{
+				sourceName = sourceName,
+				filterName = filterName,
+				filterSettings = filterSettings,
+				overlay = (overlay ?? null)
+			};
+			SendMessage(req);
 		}
 		#endregion
 		#region SCENE_ITEM_REQUESTS
@@ -1100,6 +1226,298 @@ namespace COBWEBS_Client
 			var res = GetResponse<STRUCT_GET_SCENE_ITEM_LIST>(req.Data.RequestID); // returns objects
 			return res;
 		}
+		/// <summary>
+		/// Returns the ID of the specified source in a given scene
+		/// </summary>
+		/// <param name="sceneName">Scene to get item IDs from</param>
+		/// <param name="sourceName">Source to get the ID of</param>
+		/// <param name="searchOffset">-1 returns first item, >= 0 means first forward</param>
+		/// <returns></returns>
+		public async Task<int> GetSceneItemId(string sceneName, string sourceName, int? searchOffset = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSceneItemId";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sourceName = sourceName,
+				searchOffset = searchOffset
+			};
+			SendMessage(req);
+			var res = GetResponse<int>(req.Data.RequestID, "sceneItemId");
+			return res;
+		}
+		/// <summary>
+		/// Does the same as GeteSceneItemList but for groups. You should be using nested scenes instead though
+		/// </summary>
+		/// <param name="sceneName"></param>
+		/// <returns></returns>
+		public async Task<STRUCT_GET_GROUP_SCENE_ITEM_LIST> GetGroupSceneItemList(string sceneName)
+		{
+			Logger.LogWarning("You should use nested scenes instead of groups!");
+			Request req = new();
+			req.Data.RequestType = "GetGroupSceneItemList";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { sceneName = sceneName };
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_GROUP_SCENE_ITEM_LIST>(req.Data.RequestID); // returns objects
+			return res;
+		}
+		/// <summary>
+		/// Create a new item in specified scene
+		/// </summary>
+		/// <param name="sceneName">Scene to create item in</param>
+		/// <param name="sourceName">Source type to create</param>
+		/// <param name="sceneItemEnabled">Whether it should be enabled</param>
+		/// <returns></returns>
+		public async Task<int> CreateSceneItem(string sceneName, string sourceName, bool? sceneItemEnabled = false)
+		{
+			Request req = new();
+			req.Data.RequestType = "CreateSceneItem";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sourceName = sourceName,
+				sceneItemEnabled = sceneItemEnabled
+			};
+			SendMessage(req);
+			var res = GetResponse<int>(req.Data.RequestID, "sceneItemId");
+			return res;
+		}
+		/// <summary>
+		/// Duplicates and existing source
+		/// </summary>
+		/// <param name="sceneName">Scene to copy an item from</param>
+		/// <param name="sceneItemId">Item ID of the source to be copied</param>
+		/// <param name="destinationSceneName">Scene to create the copy in - null for sceneName</param>
+		/// <returns></returns>
+		public async Task<int> DuplicateSceneItem(string sceneName, int sceneItemId, string? destinationSceneName = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "DuplicateSceneItem";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sceneItemId = sceneItemId,
+				destinationSceneName = destinationSceneName
+			};
+			SendMessage(req);
+			var res = GetResponse<int>(req.Data.RequestID, "sceneItemId");
+			return res;
+		}
+		/// <summary>
+		/// Returns specified source's transform information
+		/// </summary>
+		/// <param name="sceneName">Scene containing target item</param>
+		/// <param name="sceneItemId">Item ID of source</param>
+		/// <returns></returns>
+		public async Task<STRUCT_GET_SCENE_ITEM_LIST_SCENE_ITEMS_SCENE_ITEM_TRANSFORM> GetSceneItemTransform(string sceneName, int sceneItemId)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSceneItemTransform";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sceneItemId = sceneItemId
+			};
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_SCENE_ITEM_LIST_SCENE_ITEMS_SCENE_ITEM_TRANSFORM>(req.Data.RequestID, "sceneItemTransform");
+			return res;
+		}
+		/// <summary>
+		/// Sets specified source's transform information
+		/// </summary>
+		/// <param name="sceneName">Scene to get item from</param>
+		/// <param name="sceneItemId">ID of item to modify</param>
+		/// <param name="sceneItemTransform">New transform</param>
+		public async void SetSceneItemTransform(string sceneName, int sceneItemId, object sceneItemTransform)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetSceneItemTransform";
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sceneItemId = sceneItemId,
+				sceneItemTransform = sceneItemTransform
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Returns whether the item is enabled
+		/// </summary>
+		/// <param name="sceneName">Scene to get item from</param>
+		/// <param name="sceneItemId">ID of item to check</param>
+		/// <returns></returns>
+		public async Task<bool> GetSceneItemEnabled(string sceneName, int sceneItemId)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSceneItemEnabled";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sceneItemId = sceneItemId
+			};
+			SendMessage(req);
+			var res = GetResponse<bool>(req.Data.RequestID, "sceneItemEnabled");
+			return res;
+		}
+		/// <summary>
+		/// Sets whether the specified item is enabled
+		/// </summary>
+		/// <param name="sceneName">Scene to get item from</param>
+		/// <param name="sceneItemId">ID of source to modify</param>
+		/// <param name="sceneItemEnabled">Whether source should be enabled or not</param>
+		public async void SetSceneItemEnabled(string sceneName, int sceneItemId, bool sceneItemEnabled)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetSceneItemEnabled";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sceneItemId = sceneItemId,
+				sceneItemEnabled = sceneItemEnabled
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Returns whether the source is locked
+		/// </summary>
+		/// <param name="sceneName">Scene to get item from</param>
+		/// <param name="sceneItemId">Item ID of the source to check</param>
+		/// <returns></returns>
+		public async Task<bool> GetSceneItemLocked(string sceneName, int sceneItemId)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSceneItemLocked";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sceneItemId = sceneItemId
+			};
+			SendMessage(req);
+			var res = GetResponse<bool>(req.Data.RequestID, "sceneItemLocked");
+			return res;
+		}
+		/// <summary>
+		/// Sets whether a source should be locked
+		/// </summary>
+		/// <param name="sceneName">Scene to get items from</param>
+		/// <param name="sceneItemId">Item ID of the source to modify</param>
+		/// <param name="sceneItemLocked">Whether the source should be locked</param>
+		public async void SetSceneItemLocked(string sceneName, int sceneItemId, bool sceneItemLocked)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetSceneItemLocked";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sceneItemId = sceneItemId,
+				sceneItemLocked = sceneItemLocked
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Returns the index of the specified source
+		/// </summary>
+		/// <param name="sceneName">Scene to get items from</param>
+		/// <param name="sceneItemId">ID of the item to return the position of</param>
+		/// <returns></returns>
+		public async Task<int> GetSceneItemIndex(string sceneName, int sceneItemId)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSceneItemIndex";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sceneItemId = sceneItemId
+			};
+			SendMessage(req);
+			var res = GetResponse<int>(req.Data.RequestID, "sceneItemIndex");
+			return res;
+		}
+		/// <summary>
+		/// Sets the specified source's position in the list
+		/// </summary>
+		/// <param name="sceneName">Scene to get items from</param>
+		/// <param name="sceneItemId">ID of item to modify</param>
+		/// <param name="sceneItemIndex">New position of the item</param>
+		public async void SetSceneItemIndex(string sceneName, int sceneItemId, int sceneItemIndex)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetSceneItemIndex";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sceneItemId = sceneItemId,
+				sceneItemIndex = sceneItemIndex
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Returns the current blend mode of the specified source
+		/// </summary>
+		/// <param name="sceneName">Scene to get items from</param>
+		/// <param name="sceneItemId">Item to get blend mode for</param>
+		/// <returns></returns>
+		public async Task<BlendMode> GetSceneItemBlendMode(string sceneName, int sceneItemId)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetSceneItemBlendMode";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sceneItemId = sceneItemId
+			};
+			SendMessage(req);
+			var res = GetResponse<BlendMode>(req.Data.RequestID, "sceneItemBlendMode");
+			return res;
+		}
+		/// <summary>
+		/// Sets the blend mode of the specified source
+		/// </summary>
+		/// <param name="sceneName">Scene to get items from</param>
+		/// <param name="sceneItemId">ID of item to modify</param>
+		/// <param name="sceneItemBlendMode">New blend mode to apply</param>
+		public async void SetSceneItemBlendMode(string sceneName, int sceneItemId, BlendMode sceneItemBlendMode)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetSceneItemBlendMode";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sceneItemId = sceneItemId,
+				sceneItemBlendMode = sceneItemBlendMode.ToString()
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Deletes the specified item from a scene
+		/// </summary>
+		/// <param name="sceneName">Scene to delete an item from</param>
+		/// <param name="sceneItemId">Item ID of the source to be deleted</param>
+		public async void RemoveSceneItem(string sceneName, int sceneItemId)
+		{
+			Request req = new();
+			req.Data.RequestType = "RemoveSceneItem";
+			req.Data.RequestData = new
+			{
+				sceneName = sceneName,
+				sceneItemId = sceneItemId
+			};
+			SendMessage(req);
+		}
 		#endregion
 		#region OUTPUT_REQUESTS
 		/// <summary>
@@ -1115,6 +1533,7 @@ namespace COBWEBS_Client
 			var res = GetResponse<STRUCT_GET_OUTPUT_LIST>(req.Data.RequestID); // returns objects
 			return res;
 		}
+
 		#endregion
 		#region STREAM_REQUESTS
 		/// <summary>
@@ -1243,6 +1662,71 @@ namespace COBWEBS_Client
 		{
 			Request req = new();
 			req.Data.RequestType = "ResumeRecord";
+			SendMessage(req);
+		}
+		#endregion
+		#region MEDIA_REQUESTS
+		/// <summary>
+		/// Returns the status of a media input
+		/// </summary>
+		/// <param name="inputName">Name of the media to get the status of</param>
+		/// <returns></returns>
+		public async Task<STRUCT_GET_MEDIA_INPUT_STATUS> GetMediaInputStatus(string inputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetMediaInputStatus";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { inputName = inputName };
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_MEDIA_INPUT_STATUS>(req.Data.RequestID);
+			return res;
+		}
+		/// <summary>
+		/// Sets the cursor position of a media input
+		/// </summary>
+		/// <param name="inputName">Name of the media to set the cursor for</param>
+		/// <param name="mediaCursor">New cursor position</param>
+		public async void SetMediaInputCursor(string inputName, ulong mediaCursor)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetMediaInputCursor";
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				mediaCursor = mediaCursor
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Offsets the media cursor by the specified value
+		/// </summary>
+		/// <param name="inputName">Name of the media to change the cursor on</param>
+		/// <param name="mediaCursorOffset">Cursor offset</param>
+		public async void OffsetMediaInputcursor(string inputName, long mediaCursorOffset)
+		{
+			Request req = new();
+			req.Data.RequestType = "OffsetMediaInputCursor";
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				mediaCursorOffset = mediaCursorOffset
+			};
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Triggers an action on a media input
+		/// </summary>
+		/// <param name="inputName">Media to trigger the action on</param>
+		/// <param name="mediaAction">Action to trigger</param>
+		public async void TriggerMediaInputAction(string inputName, ObsMediaInputAction mediaAction)
+		{
+			Request req = new();
+			req.Data.RequestType = "TriggerMediaInputAction";
+			req.Data.RequestData = new
+			{
+				inputName = inputName,
+				mediaAction = mediaAction.ToString()
+			};
 			SendMessage(req);
 		}
 		#endregion

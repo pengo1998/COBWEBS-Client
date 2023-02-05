@@ -82,6 +82,7 @@ namespace COBWEBS_Client
 		public event EventHandler StudioModeStatesChanged;
 		public event EventHandler ScreenshotSaved;
 		#endregion
+		#region FUNCTIONS
 		/// <summary>
 		/// Inititalizes COBWEBS client and establishes the connection
 		/// </summary>
@@ -248,7 +249,7 @@ namespace COBWEBS_Client
 		private T GetResponse<T>(string requestId)
 		{
 			int cycles = 0;
-			while (cycles < cycles)
+			while (cycles < 20)
 			{
 				var res = _pendingMessages.FirstOrDefault(x => x.Key == requestId);
 				if (res.Value != null)
@@ -323,8 +324,11 @@ namespace COBWEBS_Client
 			Logger.LogWarning("Failed to get a response.");
 			return null;
 		}
-		#region UNTESTED_REQUESTS
-			#region GENERAL_REQUESTS
+		#endregion
+
+
+
+		#region GENERAL_REQUESTS
 		public async Task<JToken> CallVendorRequest(string vendorName, string requestType, object requestData)
 		{
 			Request req = new();
@@ -344,292 +348,7 @@ namespace COBWEBS_Client
 			throw new NotImplementedException();
 		}
 		#endregion
-			#region FILTER_REQUESTS
-		public async void CreateSourceFilter(string sourceName, string filterName, string filterKind, object? filterSettings)
-		{
-			Request req = new();
-			req.Data.RequestType = "CreateSourceFilter";
-			req.Data.RequestData = new
-			{
-				sourceName = sourceName,
-				filterName = filterName,
-				filterKind = filterKind,
-				filterSettings = (filterSettings ?? null)
-			};
-			SendMessage(req);
-		}
-		public async void RemoveSourceFilter(string sourceName, string filterName)
-		{
-			Request req = new();
-			req.Data.RequestType = "RemoveSourceFilter";
-			req.Data.RequestData = new { sourceName = sourceName, filterName = filterName };
-			SendMessage(req);
-		}
-		public async void SetSourceFilterName(string sourceName, string filterName, string newFilterName)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetSourceFilterName";
-			req.Data.RequestData = new
-			{
-				sourceName = sourceName,
-				filterName = filterName,
-				newFilterName = newFilterName
-			};
-			SendMessage(req);
-		}
-		public async Task<STRUCT_GET_SOURCE_FILTER> GetSourceFilter(string sourceName, string filterName)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSourceFilteR";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sourceName = sourceName,
-				filterName = filterName
-			};
-			var res = GetResponse<STRUCT_GET_SOURCE_FILTER>(req.Data.RequestID); // returns object
-			return res;
-		}
-		public async void SetSourceFilterIndex(string sourceName, string filterName, int filterIndex)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetSourceFilterIndex";
-			req.Data.RequestData = new
-			{
-				sourceName = sourceName,
-				filterName = filterName,
-				filterIndex = filterIndex
-			};
-			SendMessage(req);
-		}
-		public async void SetSourceFilterSettings(string sourceName, string filterName, object filterSettings, bool? overlay)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetSourceFilterSettings";
-			req.Data.RequestData = new
-			{
-				sourceName = sourceName,
-				filterName = filterName,
-				filterSettings = filterSettings,
-				overlay = (overlay ?? null)
-			};
-			SendMessage(req);
-		}
-		public async void SetSourceFilterEnabled(string sourceName, string filterName, bool filterEnabled)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetSourceFilterEnabled";
-			req.Data.RequestData = new
-			{
-				sourceName = sourceName,
-				filterName = filterName,
-				filterEnabled = filterEnabled
-			};
-			SendMessage(req);
-		}
-		#endregion
-			#region SCENE_ITEM_REQUESTS
-		public async Task<STRUCT_GET_GROUP_SCENE_ITEM_LIST> GetGroupSceneItemList(string sceneName)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetGroupSceneItemList";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new { sceneName = sceneName };
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_GROUP_SCENE_ITEM_LIST>(req.Data.RequestID); // returns objects
-			return res;
-		}
-		public async Task<int> GetSceneItemId(string sceneName, string sourceName, int? searchOffset)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSceneItemId";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sourceName = sourceName,
-				searchOffset = (searchOffset ?? null)
-			};
-			SendMessage(req);
-			var res = GetResponse<int>(req.Data.RequestID, "sceneItemId");
-			return res;
-		}
-		public async Task<int> CreateSceneItem(string sceneName, string sourceName, bool? sceneItemEnabled)
-		{
-			Request req = new();
-			req.Data.RequestType = "CreateSceneItem";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sourceName = sourceName,
-				sceneItemEnabled = (sceneItemEnabled ?? null)
-			};
-			SendMessage(req);
-			var res = GetResponse<int>(req.Data.RequestID, "sceneItemId");
-			return res;
-		}
-		public async void RemoveSceneItem(string sceneName, int sceneItemId)
-		{
-			Request req = new();
-			req.Data.RequestType = "RemoveSceneItem";
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sceneItemId = sceneItemId
-			};
-			SendMessage(req);
-		}
-		public async Task<int> DuplicateSceneItem(string sceneName, int sceneItemId, string? destinationSceneName)
-		{
-			Request req = new();
-			req.Data.RequestType = "DuplicateSceneItem";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sceneItemId = sceneItemId,
-				destinationSceneName = (destinationSceneName ?? null)
-			};
-			SendMessage(req);
-			var res = GetResponse<int>(req.Data.RequestID, "sceneItemId");
-			return res;
-		}
-		public async Task<STRUCT_GET_SCENE_ITEM_TRANSFORM> GetSceneItemTransform(string sceneName, int sceneItemId)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSceneItemTransform";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sceneItemId = sceneItemId
-			};
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_SCENE_ITEM_TRANSFORM>(req.Data.RequestID); // returns object
-			return res;
-		}
-		public async void SetSceneItemTransform(string sceneName, int sceneItemId, object sceneItemTransform)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetSceneItemTransform";
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sceneItemId = sceneItemId,
-				sceneItemTransform = sceneItemTransform
-			};
-			SendMessage(req);
-		}
-		public async Task<bool> GetSceneItemEnabled(string sceneName, int sceneItemId)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSceneItemEnabled";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sceneItemId = sceneItemId
-			};
-			SendMessage(req);
-			var res = GetResponse<bool>(req.Data.RequestID, "sceneItemEnabled");
-			return res;
-		}
-		public async void SetSceneItemEnabled(string sceneName, int sceneItemId, bool sceneItemEnabled)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetSceneItemEnabled";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sceneItemId = sceneItemId,
-				sceneItemEnabled = sceneItemEnabled
-			};
-			SendMessage(req);
-		}
-		public async Task<bool> GetSceneItemLocked(string sceneName, int sceneItemId)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSceneItemLocked";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sceneItemId = sceneItemId
-			};
-			SendMessage(req);
-			var res = GetResponse<bool>(req.Data.RequestID, "sceneItemLocked");
-			return res;
-		}
-		public async void SetSceneItemLocked(string sceneName, int sceneItemId, bool sceneItemLocked)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetSceneItemLocked";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sceneItemId = sceneItemId,
-				sceneItemLocked = sceneItemLocked
-			};
-			SendMessage(req);
-		}
-		public async Task<int> GetSceneItemIndex(string sceneName, int sceneItemId)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSceneItemIndex";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sceneItemId = sceneItemId
-			};
-			SendMessage(req);
-			var res = GetResponse<int>(req.Data.RequestID, "sceneItemIndex");
-			return res;
-		}
-		public async void SetSceneItemIndex(string sceneName, int sceneItemId, int sceneItemIndex)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetSceneItemIndex";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sceneItemId = sceneItemId,
-				sceneItemIndex = sceneItemIndex
-			};
-		}
-		public async Task<BlendMode> GetSceneItemBlendMode(string sceneName, int sceneItemId)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetSceneItemBlendMode";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sceneItemId = sceneItemId
-			};
-			SendMessage(req);
-			var res = GetResponse<BlendMode>(req.Data.RequestID, "sceneItemBlendMode");
-			return res;
-		}
-		public async void SetSceneItemBlendMode(string sceneName, int sceneItemId, BlendMode sceneItemBlendMode)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetSceneItemBlendMode";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new
-			{
-				sceneName = sceneName,
-				sceneItemId = sceneItemId,
-				sceneItemBlendMode = sceneItemBlendMode.ToString()
-			};
-			SendMessage(req);
-		}
-		#endregion
-			#region OUTPUT_REQUESTS
+		#region OUTPUT_REQUESTS
 		public async Task<bool> GetVirtualCamStatus()
 		{
 			Request req = new();
@@ -760,52 +479,6 @@ namespace COBWEBS_Client
 			};
 			SendMessage(req);
 		}
-		#endregion
-			#region MEDIA_INPUT_REQUESTS
-		public async Task<STRUCT_GET_MEDIA_INPUT_STATUS> GetMediaInputStatus(string inputName)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetMediaInputStatus";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new { inputName = inputName };
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_MEDIA_INPUT_STATUS>(req.Data.RequestID);
-			return res;
-		}
-		public async void SetMediaCursor(string inputName, ulong mediaCursor)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetMediaCursor";
-			req.Data.RequestData = new
-			{
-				inputName = inputName,
-				mediaCursor = mediaCursor
-			};
-			SendMessage(req);
-		}
-		public async void OffsetMediaInputcursor(string inputName, ulong mediaCursorOffset)
-		{
-			Request req = new();
-			req.Data.RequestType = "OffsetMediaInputCursor";
-			req.Data.RequestData = new
-			{
-				inputName = inputName,
-				mediaCursorOffset = mediaCursorOffset
-			};
-			SendMessage(req);
-		}
-		public async void TriggerMediaInputAction(string inputName, string mediaAction)
-		{
-			Request req = new();
-			req.Data.RequestType = "TriggerMediaInputAction";
-			req.Data.RequestData = new
-			{
-				inputName = inputName,
-				mediaAction = mediaAction
-			};
-			SendMessage(req);
-		}
-		#endregion
 		#endregion
 	}
 }

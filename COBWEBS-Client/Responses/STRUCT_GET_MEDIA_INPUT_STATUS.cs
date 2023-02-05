@@ -8,7 +8,7 @@ namespace COBWEBS_Client.Responses
 {
 	public struct STRUCT_GET_MEDIA_INPUT_STATUS
 	{
-		public string mediaState { get; set; }
+		public MediaState mediaState { get; set; }
 		public ulong? mediaDuration { get; set; }
 		public ulong? mediaCursor { get; set; }
 	}
