@@ -1,4 +1,5 @@
 ﻿using COBWEBS_Client.Responses;
+using COBWEBS_Client.Structs;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -81,6 +82,54 @@ namespace COBWEBS_Client
 			Request req = new();
 			req.Data.RequestType = "Sleep";
 			req.Data.RequestData = new { sleepFrames = sleepFrames };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Call a request registered to a vendor
+		/// </summary>
+		/// <param name="vendorName">Vendor to call a request from</param>
+		/// <param name="requestType">Vendor's request type</param>
+		/// <param name="requestData">Vendor's request data</param>
+		/// <returns></returns>
+		public async Task<STRUCT_VENDOR_RESPONSE> CallVendorRequest(string vendorName, string requestType, object? requestData)
+		{
+			Request req = new();
+			req.Data.RequestType = "CallVendorRequest";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new {
+				vendorName = vendorName,
+				requestType = requestType,
+				requestData = requestData
+			};
+			SendMessage(req);
+			var res = GetResponse<STRUCT_VENDOR_RESPONSE>(req.Data.RequestID);
+			return res;
+		}
+		/// <summary>
+		/// Broadcasts a `CustomEvent` to all websocket clients. Receivers are clients which are identified and subscribed.
+		/// </summary>
+		/// <param name="eventData"></param>
+		public async void BroadcastCustomEvent(object eventData)
+		{
+			Request req = new();
+			req.Data.RequestType = "BroadcastCustomEvent";
+			req.Data.RequestData = new { eventData = eventData };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Programmatically triggers any action assigned to the hotkey combination sent
+		/// </summary>
+		/// <param name="keyID">OBS KeyID to use</param>
+		/// <param name="keyModifiers">Key modifiers (alt, shift, ctrl, cmd)</param>
+		public async void TriggerHotkeyByKeySequence(string? keyID = null, STRUCT_KEY_MODIFIERS? keyModifiers = null)
+		{
+			Request req = new();
+			req.Data.RequestType = "TriggerHotkeyByKeySequence";
+			req.Data.RequestData = new
+			{
+				keyId = keyID,
+				keyModifiers = keyModifiers
+			};
 			SendMessage(req);
 		}
 		#endregion
@@ -1533,7 +1582,199 @@ namespace COBWEBS_Client
 			var res = GetResponse<STRUCT_GET_OUTPUT_LIST>(req.Data.RequestID); // returns objects
 			return res;
 		}
-
+		/// <summary>
+		/// Returns the virtual cam status
+		/// </summary>
+		/// <returns></returns>
+		public async Task<bool> GetVirtualCamStatus()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetVirtualCamStatus";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<bool>(req.Data.RequestID, "outputActive");
+			return res;
+		}
+		/// <summary>
+		/// Toggles the virtual cam on and off
+		/// </summary>
+		/// <returns></returns>
+		public async Task<bool> ToggleVirtualCam()
+		{
+			Request req = new();
+			req.Data.RequestType = "ToggleVirtualCam";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<bool>(req.Data.RequestID, "outputActive");
+			return res;
+		}
+		/// <summary>
+		/// Turns the virtual cam on
+		/// </summary>
+		public async void StartVirtualCam()
+		{
+			Request req = new();
+			req.Data.RequestType = "StartVirtualCam";
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Turns the virtual cam off
+		/// </summary>
+		public async void StopVirtualCam()
+		{
+			Request req = new();
+			req.Data.RequestType = "StopVirtualCam";
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Returns the replay buffer output status
+		/// </summary>
+		/// <returns></returns>
+		public async Task<bool> GetReplayBufferStatus()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetReplayBufferStatus";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<bool>(req.Data.RequestID, "outputActive");
+			return res;
+		}
+		/// <summary>
+		/// Toggles replay buffer on/off
+		/// </summary>
+		/// <returns></returns>
+		public async Task<bool> ToggleReplayBuffer()
+		{
+			Request req = new();
+			req.Data.RequestType = "ToggleReplayBuffer";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<bool>(req.Data.RequestID, "outputActive");
+			return res;
+		}
+		/// <summary>
+		/// Turns replay buffer on
+		/// </summary>
+		public async void StartReplayBuffer()
+		{
+			Request req = new();
+			req.Data.RequestType = "StartReplayBuffer";
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Turns replay buffer off
+		/// </summary>
+		public async void StopReplayBuffer()
+		{
+			Request req = new();
+			req.Data.RequestType = "StopReplayBuffer";
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Saves the content of the replay buffer output
+		/// </summary>
+		public async void SaveReplayBuffer()
+		{
+			Request req = new();
+			req.Data.RequestType = "SaveReplayBuffer";
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Returns the filename of the last replay buffer save
+		/// </summary>
+		/// <returns></returns>
+		public async Task<string> GetLastReplayBufferReplay()
+		{
+			Request req = new();
+			req.Data.RequestType = "GetLastReplayBufferReplay";
+			req.Data.RequestID = GenerateRequestID();
+			SendMessage(req);
+			var res = GetResponse<string>(req.Data.RequestID, "savedReplayPath");
+			return res;
+		}
+		/// <summary>
+		/// Returns information about the specified output
+		/// </summary>
+		/// <param name="outputName">Output to get status of</param>
+		/// <returns></returns>
+		public async Task<STRUCT_GET_OUTPUT_STATUS> GetOutputStatus(string outputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetOutputStatus";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { outputName = outputName };
+			SendMessage(req);
+			var res = GetResponse<STRUCT_GET_OUTPUT_STATUS>(req.Data.RequestID);
+			return res;
+		}
+		/// <summary>
+		/// Toggles the specified output between on and off
+		/// </summary>
+		/// <param name="outputName">Output to toggle</param>
+		/// <returns></returns>
+		public async Task<bool> ToggleOutput(string outputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "ToggleOutput";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { outputName = outputName };
+			SendMessage(req);
+			var res = GetResponse<bool>(req.Data.RequestID, "outputActive");
+			return res;
+		}
+		/// <summary>
+		/// Turns on the specified output
+		/// </summary>
+		/// <param name="outputName">Output to turn on</param>
+		public async void StartOutput(string outputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "StartOutput";
+			req.Data.RequestData = new { outputName = outputName };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Turns off the specified output
+		/// </summary>
+		/// <param name="outputName">Output to turn off</param>
+		public async void StopOutput(string outputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "StopOutput";
+			req.Data.RequestData = new { outputName = outputName };
+			SendMessage(req);
+		}
+		/// <summary>
+		/// Returns the settings for the specified output
+		/// </summary>
+		/// <param name="outputName">Output to load settings for</param>
+		/// <returns></returns>
+		public async Task<JToken> GetOutputSettings(string outputName)
+		{
+			Request req = new();
+			req.Data.RequestType = "GetOutputSettings";
+			req.Data.RequestID = GenerateRequestID();
+			req.Data.RequestData = new { outputName = outputName };
+			SendMessage(req);
+			var res = GetResponse<JToken>(req.Data.RequestID, "outputSettings");
+			return res;
+		}
+		/// <summary>
+		/// Sets the settings for the specified output
+		/// </summary>
+		/// <param name="outputName">Output to modify</param>
+		/// <param name="outputSettings">New settings to set</param>
+		public async void SetOutputSettings(string outputName, object outputSettings)
+		{
+			Request req = new();
+			req.Data.RequestType = "SetOutputSettings";
+			req.Data.RequestData = new
+			{
+				outputName = outputName,
+				outputSettings = outputSettings
+			};
+			SendMessage(req);
+		}
 		#endregion
 		#region STREAM_REQUESTS
 		/// <summary>

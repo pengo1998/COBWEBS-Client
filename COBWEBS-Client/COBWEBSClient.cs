@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Security.Principal;
 using COBWEBS_Client.Responses;
+using COBWEBS_Client.Structs;
 using System.Reflection.Metadata.Ecma335;
 
 namespace COBWEBS_Client
@@ -232,10 +233,6 @@ namespace COBWEBS_Client
 				return result;
 			}
 		}
-		private async void HandleEvent(JObject message)
-		{
-			Console.ReadKey();
-		}
 		private async void SendMessage(Request req)
 		{
 			byte[] request = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(req));
@@ -324,160 +321,16 @@ namespace COBWEBS_Client
 			Logger.LogWarning("Failed to get a response.");
 			return null;
 		}
-		#endregion
-
-
-
-		#region GENERAL_REQUESTS
-		public async Task<JToken> CallVendorRequest(string vendorName, string requestType, object requestData)
+		private async void HandleEvent(JObject message)
 		{
-			Request req = new();
-			req.Data.RequestType = "CallVendorRequest";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new { vendorName = vendorName, requestType = requestType, requestData = requestData };
-			SendMessage(req);
-			var res = GetResponse(req.Data.RequestID);
-			return res;
-		}
-		public async void BroadcastCustomEvent()
-		{
-			throw new NotImplementedException();
-		}
-		public async void TriggerHotkeyByKeySequence()
-		{
-			throw new NotImplementedException();
-		}
-		#endregion
-		#region OUTPUT_REQUESTS
-		public async Task<bool> GetVirtualCamStatus()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetVirtualCamStatus";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<bool>(req.Data.RequestID, "outputActive");
-			return res;
-		}
-		public async Task<bool> ToggleVirtualCam()
-		{
-			Request req = new();
-			req.Data.RequestType = "ToggleVirtualCam";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<bool>(req.Data.RequestID, "outputActive");
-			return res;
-		}
-		public async void StartVirtualCam()
-		{
-			Request req = new();
-			req.Data.RequestType = "StartVirtualCam";
-			SendMessage(req);
-		}
-		public async void StopVirtualCam()
-		{
-			Request req = new();
-			req.Data.RequestType = "StopVirtualCam";
-			SendMessage(req);
-		}
-		public async Task<bool> GetReplayBufferStatus()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetReplayBufferStatus";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<bool>(req.Data.RequestID, "outputActive");
-			return res;
-		}
-		public async Task<bool> ToggleReplayBuffer()
-		{
-			Request req = new();
-			req.Data.RequestType = "ToggleReplayBuffer";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<bool>(req.Data.RequestID, "outputActive");
-			return res;
-		}
-		public async void StartReplayBuffer()
-		{
-			Request req = new();
-			req.Data.RequestType = "StartReplayBuffer";
-			SendMessage(req);
-		}
-		public async void StopReplayBuffer()
-		{
-			Request req = new();
-			req.Data.RequestType = "StopReplayBuffer";
-			SendMessage(req);
-		}
-		public async void SaveReplayBuffer()
-		{
-			Request req = new();
-			req.Data.RequestType = "SaveReplayBuffer";
-			SendMessage(req);
-		}
-		public async Task<string> GetLastReplayBufferReplay()
-		{
-			Request req = new();
-			req.Data.RequestType = "GetLastReplayBufferReplay";
-			req.Data.RequestID = GenerateRequestID();
-			SendMessage(req);
-			var res = GetResponse<string>(req.Data.RequestID, "savedReplayPath");
-			return res;
-		}
-		public async Task<STRUCT_GET_OUTPUT_STATUS> GetOutputStatus(string outputName)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetOutputStatus";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new { outputName = outputName };
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_OUTPUT_STATUS>(req.Data.RequestID);
-			return res;
-		}
-		public async Task<bool> ToggleOutput(string outputName)
-		{
-			Request req = new();
-			req.Data.RequestType = "ToggleOutput";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new { outputName = outputName };
-			SendMessage(req);
-			var res = GetResponse<bool>(req.Data.RequestID, "outputActive");
-			return res;
-		}
-		public async void StartOutput(string outputName)
-		{
-			Request req = new();
-			req.Data.RequestType = "StartOutput";
-			req.Data.RequestData = new { outputName = outputName };
-			SendMessage(req);
-		}
-		public async void StopOutput(string outputName)
-		{
-			Request req = new();
-			req.Data.RequestType = "StopOutput";
-			req.Data.RequestData = new { outputName = outputName };
-			SendMessage(req);
-		}
-		public async Task<STRUCT_GET_OUTPUT_SETTINGS> GetOutputSettings(string outputName)
-		{
-			Request req = new();
-			req.Data.RequestType = "GetOutputSettings";
-			req.Data.RequestID = GenerateRequestID();
-			req.Data.RequestData = new { outputName = outputName };
-			SendMessage(req);
-			var res = GetResponse<STRUCT_GET_OUTPUT_SETTINGS>(req.Data.RequestID); // returns object
-			return res;
-		}
-		public async void SetOutputSettings(string outputName, object outputSettings)
-		{
-			Request req = new();
-			req.Data.RequestType = "SetOutputSettings";
-			req.Data.RequestData = new
+			STRUCT_EVENT evnt = message["d"].ToObject<STRUCT_EVENT>();
+			switch(evnt.eventType)
 			{
-				outputName = outputName,
-				outputSettings = outputSettings
-			};
-			SendMessage(req);
+
+				default:
+					Logger.LogWarning("Received unknown event.");
+					break;
+			}
 		}
 		#endregion
 	}

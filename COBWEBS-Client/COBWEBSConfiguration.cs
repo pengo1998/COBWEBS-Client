@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -99,5 +100,63 @@ namespace COBWEBS_Client
 		Warning,
 		Error,
 		None
+	}
+
+	public enum EventType
+	{
+		ExitStart,
+		VendorEvent,
+		CustomEvent,
+		CurrentSceneCollectionChanging,
+		CurrentSceneCollectionChanged,
+		SceneCollectionListChanged,
+		CurrentProfileChanging,
+		CurrentProfileChanged,
+		ProfileListChanged,
+		SceneCreated,
+		SceneRemoved,
+		SceneNameChanged,
+		CurrentProgramSceneChanged,
+		CurrentPreviewSceneChanged,
+		SceneListChanged,
+		InputCreated,
+		InputRemoved,
+		InputNameChanged,
+		InputActiveStateChanged,
+		InputShowStateChanged,
+		InputMuteStateChanged,
+		InputVolumeChanged,
+		InputAudioBalanceChanged,
+		InputAudioSyncOffsetChanged,
+		InputAudioTracksChanged,
+		InputAudioMonitorTypeChanged,
+		InputVolumeMeters,
+		CurrentSceneTransitionChanged,
+		CurrentSceneTransitionDurationChanged,
+		SceneTransitionStarted,
+		SceneTransitionEnded,
+		SceneTransitionVideoEnded,
+		SourceFilterListReindexed,
+		SourceFilterCreated,
+		SourceFilterRemoved,
+		SourceFilterNameChanged,
+		SourceFilterEnableStateChanged,
+		SceneItemCreated,
+		SceneItemRemoved,
+		SceneItemListReindexed,
+		SceneItemEnableStateChanged,
+		SceneItemLockStateChanged,
+		SceneItemSelected,
+		SceneItemTransformChanged,
+		StreamStateChanged,
+		RecordStateChanged,
+		ReplayBufferStateChanged,
+		VirtualcamStateChanged,
+		ReplayBufferSaved,
+		MediaInputPlaybackStarted,
+		MediaInputPlaybackEnded,
+		MediaInputActionTriggered,
+		StudioModeStateChanged,
+		ScreenshotSaved
 	}
 }

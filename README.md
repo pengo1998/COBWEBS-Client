@@ -25,15 +25,19 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
 🟨 - Finished & Untested<br>
 🟩 - Finished & Tested
 
+## Extra
+- 🟥Proper error response handling
+- 🟧Clean up structs
+
 ## Requests
-- 🟧<b>General Requests</b>
+- 🟩<b>General Requests</b>
   - 🟩GetVersion
   - 🟩GetStats
-  - 🟥BroadcastCustomEvent
-  - 🟨CallVendorRequest
+  - 🟩BroadcastCustomEvent
+  - 🟩CallVendorRequest
   - 🟩GetHotkeyList
   - 🟩TriggerHotkeyByName
-  - 🟥TriggerHotkeyByKeySequence
+  - 🟩TriggerHotkeyByKeySequence
   - 🟩Sleep
 - 🟩<b>Config Requests</b>
   - 🟩GetPersistentData
@@ -68,7 +72,7 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟩SetSceneName
   - 🟩GetSceneSceneTransitionOverride
   - 🟩SetSceneSceneTransitionOverride
-- 🟨<b>Inputs Requests</b>
+- 🟩<b>Inputs Requests</b>
   - 🟩GetInputList
   - 🟩GetInputKindList
   - 🟩GetSpecialInputs
@@ -91,8 +95,8 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟩SetInputAudioMonitorType
   - 🟩GetInputAudioTracks
   - 🟩SetInputAudioTracks
-  - 🟨GetInputPropertiesListPropertyItems
-  - 🟨PressInputPropertiesButton
+  - 🟩GetInputPropertiesListPropertyItems
+  - 🟩PressInputPropertiesButton
 - 🟩<b>Transitions Requests</b>
   - 🟩GetTransitionKindList
   - 🟩GetSceneTransitionList
@@ -130,24 +134,24 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟩SetSceneItemIndex
   - 🟩GetSceneItemBlendMode
   - 🟩SetSceneItemBlendMode
-- 🟨<b>Outputs Requests</b>
-  - 🟨GetVirtualCamStatus
-  - 🟨ToggleVirtualCam
-  - 🟨StartVirtualCam
-  - 🟨StopVirtualCam
-  - 🟨GetReplayBufferStatus
-  - 🟨ToggleReplayBuffer
-  - 🟨StartReplayBuffer
-  - 🟨StopReplayBuffer
-  - 🟨SaveReplayBuffer
-  - 🟨GetLastReplayBufferReplay
+- 🟩<b>Outputs Requests</b>
+  - 🟩GetVirtualCamStatus
+  - 🟩ToggleVirtualCam
+  - 🟩StartVirtualCam
+  - 🟩StopVirtualCam
+  - 🟩GetReplayBufferStatus
+  - 🟩ToggleReplayBuffer
+  - 🟩StartReplayBuffer
+  - 🟩StopReplayBuffer
+  - 🟩SaveReplayBuffer
+  - 🟩GetLastReplayBufferReplay
   - 🟩GetOutputList
-  - 🟨GetOutputStatus
-  - 🟨ToggleOutput
-  - 🟨StartOutput
-  - 🟨StopOutput
-  - 🟨GetOutputSettings
-  - 🟨SetOutputSettings
+  - 🟩GetOutputStatus
+  - 🟩ToggleOutput
+  - 🟩StartOutput
+  - 🟩StopOutput
+  - 🟩GetOutputSettings
+  - 🟩SetOutputSettings
 - 🟩<b>Stream Requests</b>
   - 🟩GetStreamStatus
   - 🟩ToggleStream
