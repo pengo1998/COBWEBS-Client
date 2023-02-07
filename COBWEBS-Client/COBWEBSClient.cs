@@ -1,12 +1,13 @@
 ﻿using System.Text;
 using System.Net.WebSockets;
+using System.Linq;
+using System.Reflection;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Security.Principal;
-using COBWEBS_Client.Responses;
+
 using COBWEBS_Client.Structs;
-using System.Reflection.Metadata.Ecma335;
+using COBWEBS_Client.Events;
 
 namespace COBWEBS_Client
 {
@@ -52,11 +53,11 @@ namespace COBWEBS_Client
 		public event EventHandler CurrentSceneTransitionChanged;
 		public event EventHandler CurrentSceneTransitionDurationChanged;
 		public event EventHandler SceneTransitionStarted;
-		public event EventHandler SceneTransiutionEnded;
+		public event EventHandler SceneTransitionEnded;
 		public event EventHandler SceneTransitionVideoEnded;
 		// Filter Events
 		public event EventHandler SourceFilterListReindexed;
-		public event EventHandler SceneFilterCreated;
+		public event EventHandler SourceFilterCreated;
 		public event EventHandler SourceFilterRemoved;
 		public event EventHandler SourceFilterNameChanged;
 		public event EventHandler SourceFilterEnableStateChanged;
@@ -326,7 +327,168 @@ namespace COBWEBS_Client
 			STRUCT_EVENT evnt = message["d"].ToObject<STRUCT_EVENT>();
 			switch(evnt.eventType)
 			{
-
+				case EventType.ExitStart:
+					ExitStarted.Invoke(this, null);
+					break;
+				case EventType.VendorEvent:
+					VendorEvent.Invoke(this, evnt.eventData.ToObject<VendorEventArgs>());
+					break;
+				case EventType.CustomEvent:
+					CustomEvent.Invoke(this, evnt.eventData.ToObject<CustomEventArgs>());
+					break;
+				case EventType.CurrentSceneCollectionChanging:
+					CurrentSceneCollectionChanging.Invoke(this, evnt.eventData.ToObject<CurrentSceneCollectionChangingEventArgs>());
+					break;
+				case EventType.CurrentSceneCollectionChanged:
+					CurrentSceneCollectionChanged.Invoke(this, evnt.eventData.ToObject<CurrentSceneCollectionChangedEventArgs>());
+					break;
+				case EventType.SceneCollectionListChanged:
+					SceneCollectionListChanged.Invoke(this, evnt.eventData.ToObject<SceneCollectionListChangedEventArgs>());
+					break;
+				case EventType.CurrentProfileChanging:
+					CurrentProfileChanging.Invoke(this, evnt.eventData.ToObject<CurrentProfileChangingEventArgs>());
+					break;
+				case EventType.CurrentProfileChanged:
+					CurrentProfileChanged.Invoke(this, evnt.eventData.ToObject<CurrentProfileChangedEventArgs>());
+					break;
+				case EventType.ProfileListChanged:
+					ProfileListChanged.Invoke(this, evnt.eventData.ToObject<ProfileListChangedEventArgs>());
+					break;
+				case EventType.SceneCreated:
+					SceneCreated.Invoke(this, evnt.eventData.ToObject<SceneCreatedEventArgs>());
+					break;
+				case EventType.SceneRemoved:
+					SceneRemoved.Invoke(this, evnt.eventData.ToObject<SceneRemovedEventArgs>());
+					break;
+				case EventType.SceneNameChanged:
+					SceneNameChanged.Invoke(this, evnt.eventData.ToObject<SceneNameChangedEventArgs>());
+					break;
+				case EventType.CurrentProgramSceneChanged:
+					CurrentProgramSceneChanged.Invoke(this, evnt.eventData.ToObject<CurrentProgramSceneChangedEventArgs>());
+					break;
+				case EventType.CurrentPreviewSceneChanged:
+					CurrentPreviewSceneChanged.Invoke(this, evnt.eventData.ToObject<CurrentPreviewSceneChangedEventArgs>());
+					break;
+				case EventType.SceneListChanged:
+					SceneListChanged.Invoke(this, evnt.eventData.ToObject<SceneListChangedEventArgs>());
+					break;
+				case EventType.InputCreated:
+					InputCreated.Invoke(this, evnt.eventData.ToObject<InputCreatedEventArgs>());
+					break;
+				case EventType.InputRemoved:
+					InputRemoved.Invoke(this, evnt.eventData.ToObject<InputRemovedEventArgs>());
+					break;
+				case EventType.InputNameChanged:
+					InputNameChanged.Invoke(this, evnt.eventData.ToObject<InputNameChangedEventArgs>());
+					break;
+				case EventType.InputActiveStateChanged:
+					InputActiveStateChanged.Invoke(this, evnt.eventData.ToObject<InputActiveStateChangedEventArgs>());
+					break;
+				case EventType.InputShowStateChanged:
+					InputShowStateChanged.Invoke(this, evnt.eventData.ToObject<InputShowStateChangedEventArgs>());
+					break;
+				case EventType.InputMuteStateChanged:
+					InputMuteStateChanged.Invoke(this, evnt.eventData.ToObject<InputMuteStateChangedEventArgs>());
+					break;
+				case EventType.InputVolumeChanged:
+					InputVolumeChanged.Invoke(this, evnt.eventData.ToObject<InputVolumeChangedEventArgs>());
+					break;
+				case EventType.InputAudioBalanceChanged:
+					InputAudioBalanceChanged.Invoke(this, evnt.eventData.ToObject<InputAudioBalanceChangedEventArgs>());
+					break;
+				case EventType.InputAudioSyncOffsetChanged:
+					InputAudioSyncOffsetChanged.Invoke(this, evnt.eventData.ToObject<InputAudioSyncOffsetChangedEventArgs>());
+					break;
+				case EventType.InputAudioTracksChanged:
+					InputAudioTracksChanged.Invoke(this, evnt.eventData.ToObject<InputAudioTracksChangedEventArgs>());
+					break;
+				case EventType.InputAudioMonitorTypeChanged:
+					InputAudioMonitorTypeChanged.Invoke(this, evnt.eventData.ToObject<InputAudioMonitorTypeChangedEventArgs>());
+					break;
+				case EventType.InputVolumeMeters:
+					InputVolumeMeters.Invoke(this, evnt.eventData.ToObject<InputVolumeMetersEventArgs>());
+					break;
+				case EventType.CurrentSceneTransitionChanged:
+					CurrentSceneTransitionChanged.Invoke(this, evnt.eventData.ToObject<CurrentSceneTransitionChangedEventArgs>());
+					break;
+				case EventType.CurrentSceneTransitionDurationChanged:
+					CurrentSceneTransitionDurationChanged.Invoke(this, evnt.eventData.ToObject<CurrentSceneTransitionChangedEventArgs>());
+					break;
+				case EventType.SceneTransitionStarted:
+					SceneTransitionStarted.Invoke(this, evnt.eventData.ToObject<SceneTransitionStartedEventArgs>());
+					break;
+				case EventType.SceneTransitionEnded:
+					SceneTransitionEnded.Invoke(this, evnt.eventData.ToObject<SceneTransitionEndedEventArgs>());
+					break;
+				case EventType.SceneTransitionVideoEnded:
+					SceneTransitionVideoEnded.Invoke(this, evnt.eventData.ToObject<SceneTransitionVideoEndedEVentArgs>());
+					break;
+				case EventType.SourceFilterListReindexed:
+					SourceFilterListReindexed.Invoke(this, evnt.eventData.ToObject<SourceFilterListReindexedEventArgs>());
+					break;
+				case EventType.SourceFilterCreated:
+					SourceFilterCreated.Invoke(this, evnt.eventData.ToObject<SourceFilterCreatedEventArgs>());
+					break;
+				case EventType.SourceFilterRemoved:
+					SourceFilterRemoved.Invoke(this, evnt.eventData.ToObject<SourceFilterRemovedEventArgs>());
+					break;
+				case EventType.SourceFilterNameChanged:
+					SourceFilterNameChanged.Invoke(this, evnt.eventData.ToObject<SourceFilterNameChangedEventArgs>());
+					break;
+				case EventType.SourceFilterEnableStateChanged:
+					SourceFilterEnableStateChanged.Invoke(this, evnt.eventData.ToObject<SourceFilterEnableStateChangedEventArgs>());
+					break;
+				case EventType.SceneItemCreated:
+					SceneItemCreated.Invoke(this, evnt.eventData.ToObject<SceneItemCreatedEventArgs>());
+					break;
+				case EventType.SceneItemRemoved:
+					SceneItemRemoved.Invoke(this, evnt.eventData.ToObject<SceneItemRemovedEventArgs>());
+					break;
+				case EventType.SceneItemListReindexed:
+					SceneItemListReindexed.Invoke(this, evnt.eventData.ToObject<SceneItemListReindexedEventArgs>());
+					break;
+				case EventType.SceneItemEnableStateChanged:
+					SceneItemEnableStateChanged.Invoke(this, evnt.eventData.ToObject<SceneItemEnableStateChangedEventArgs>());
+					break;
+				case EventType.SceneItemLockStateChanged:
+					SceneItemLockStateChanged.Invoke(this, evnt.eventData.ToObject<SceneItemLockStateChangedEventArgs>());
+					break;
+				case EventType.SceneItemSelected:
+					SceneItemSelected.Invoke(this, evnt.eventData.ToObject<SceneItemSelectedEventArgs>());
+					break;
+				case EventType.SceneItemTransformChanged:
+					SceneItemTransformChanged.Invoke(this, evnt.eventData.ToObject<SceneItemTransformChangedEventArgs>());
+					break;
+				case EventType.StreamStateChanged:
+					StreamStateChanged.Invoke(this, evnt.eventData.ToObject<StreamStateChangedEventArgs>());
+					break;
+				case EventType.RecordStateChanged:
+					RecordStateChanged.Invoke(this, evnt.eventData.ToObject<RecordStateChangedEventArgs>());
+					break;
+				case EventType.ReplayBufferStateChanged:
+					ReplayBufferStateChanged.Invoke(this, evnt.eventData.ToObject<ReplayBufferStateChangedEventArgs>());
+					break;
+				case EventType.VirtualcamStateChanged:
+					VirtualcamStateChanged.Invoke(this, evnt.eventData.ToObject<VirtualcamStateChangedEventArgs>());
+					break;
+				case EventType.ReplayBufferSaved:
+					ReplayBufferSaved.Invoke(this, evnt.eventData.ToObject<ReplayBufferSavedEventArgs>());
+					break;
+				case EventType.MediaInputPlaybackStarted:
+					MediaInputPlaybackStarted.Invoke(this, evnt.eventData.ToObject<MediaInputPlaybackStartedEventArgs>());
+					break;
+				case EventType.MediaInputPlaybackEnded:
+					MediaInputPlaybackEnded.Invoke(this, evnt.eventData.ToObject<MediaInputPlaybackEndedEventArgs>());
+					break;
+				case EventType.MediaInputActionTriggered:
+					MediaInputActionTriggered.Invoke(this, evnt.eventData.ToObject<MediaInputActionTriggeredEventArgs>());
+					break;
+				case EventType.StudioModeStateChanged:
+					StudioModeStateChanged.Invoke(this, evnt.eventData.ToObject<StudioModeStateChangedEventArgs>());
+					break;
+				case EventType.ScreenshotSaved:
+					ScreenshotSaved.Invoke(this, evnt.eventData.ToObject<ScreenshotSavedEventArgs>());
+					break;
 				default:
 					Logger.LogWarning("Received unknown event.");
 					break;
