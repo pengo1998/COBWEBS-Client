@@ -229,7 +229,7 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
 - 🟨<b>Scene Items Events</b>
   - 🟨SceneItemCreated
   - 🟨SceneItemRemoved
-  - 🟨SceneItemListReindexed
+  - 🟩SceneItemListReindexed
   - 🟨SceneItemEnableStateChanged
   - 🟨SceneItemLockStateChanged
   - 🟨SceneItemSelected
@@ -245,7 +245,7 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟨MediaInputPlaybackEnded
   - 🟨MediaInputActionTriggered
 - 🟨<b>Ui Events</b>
-  - 🟨StudioModeStateChanged
+  - 🟩StudioModeStateChanged
   - 🟨ScreenshotSaved
 
 

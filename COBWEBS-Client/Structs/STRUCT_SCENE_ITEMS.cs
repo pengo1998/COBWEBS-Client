@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace COBWEBS_Client.Events
+namespace COBWEBS_Client.Structs
 {
-	public class SceneItemSelectedEventArgs : EventArgs
+	public struct STRUCT_SCENE_ITEMS
 	{
-		public string sceneName { get; set; }
 		public long sceneItemId { get; set; }
+		public long sceneItemIndex { get; set; }
 	}
 }
