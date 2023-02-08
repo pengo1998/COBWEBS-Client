@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace COBWEBS_Client.Events
 {
-	internal class CustomEventArgs : EventArgs
+	public class CustomEventArgs : EventArgs
 	{
 		public object eventData { get; set; }
 	}

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using COBWEBS_Client.Structs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,6 @@ namespace COBWEBS_Client.Events
 	public class SceneItemListReindexedEventArgs : EventArgs
 	{
 		public string sceneName { get; set; }
-		public object[] sceneItems { get; set; }
+		public STRUCT_SCENE_ITEMS[] sceneItems { get; set; }
 	}
 }

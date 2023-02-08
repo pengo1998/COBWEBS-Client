@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace COBWEBS_Client.Events
 {
-	public class SceneTransitionVideoEndedEVentArgs : EventArgs
+	public class SceneTransitionVideoEndedEventArgs : EventArgs
 	{
 		public string transitionName { get; set; }
 	}
