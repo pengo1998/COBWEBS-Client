@@ -12,10 +12,8 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
 
 # Plans
 - Switch to built in .NET json functionality
-- Fix inconsistent return value types
-- Authentication support
 - Documentation
-- Proper code commenting
+- 🟧Proper code commenting
 
 # Feature Status
 	These are the features planned for the first release version.
@@ -25,9 +23,82 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
 🟨 - Finished & Untested<br>
 🟩 - Finished & Tested
 
+## Feature Overiew
+- 🟩Requests
+- 🟨Events
+- 🟧Extra
+
 ## Extra
 - 🟥Proper error response handling
 - 🟧Clean up structs
+- 🟥Authentication
+- 🟧Fix inconsistent return value types
+
+## Events	
+- 🟨<b>General Events</b>
+  - 🟩ExitStarted
+  - 🟨VendorEvent
+  - 🟨CustomEvent
+- 🟩<b>Config Events</b>
+  - 🟩CurrentSceneCollectionChanging
+  - 🟩CurrentSceneCollectionChanged
+  - 🟩SceneCollectionListChanged
+  - 🟩CurrentProfileChanging
+  - 🟩CurrentProfileChanged
+  - 🟩ProfileListChanged
+- 🟩<b>Scene Events</b>
+  - 🟩SceneCreated
+  - 🟩SceneRemoved
+  - 🟩SceneNameChanged
+  - 🟩CurrentProgramSceneChanged
+  - 🟩CurrentPreviewSceneChanged
+  - 🟩SceneListChanged
+- 🟩<b>Input Events</b>
+  - 🟩InputCreated
+  - 🟩InputRemoved
+  - 🟩InputNameChanged
+  - 🟩InputActiveStateChanged
+  - 🟩InputShowStateChanged
+  - 🟩InputMuteStateChanged
+  - 🟩InputVolumeChanged
+  - 🟩InputAudioBalanceChanged
+  - 🟩InputAudioSyncOffsetChanged
+  - 🟩InputAudioTracksChanged
+  - 🟩InputAudioMonitorTypeChanged
+  - 🟩InputVolumeMeters
+- 🟨<b>Transitions Events</b>
+  - 🟨CurrentSceneTransitionChanged
+  - 🟨CurrentSceneTransitionDurationChanged
+  - 🟨SceneTransitionStarted
+  - 🟨SceneTransitionEnded
+  - 🟨SceneTransitionVideoEnded
+- 🟨<b>Filters Events</b>
+  - 🟨SourceFilterListReindexed
+  - 🟨SourceFilterCreated
+  - 🟨SourceFilterRemoved
+  - 🟨SourceFilterNameChanged
+  - 🟨SourceFilterEnableStateChanged
+- 🟩<b>Scene Item Events</b>
+  - 🟩SceneItemCreated
+  - 🟩SceneItemRemoved
+  - 🟩SceneItemListReindexed
+  - 🟩SceneItemEnableStateChanged
+  - 🟩SceneItemLockStateChanged
+  - 🟩SceneItemSelected
+  - 🟩SceneItemTransformChanged
+- 🟨<b>Output Events</b>
+  - 🟨StreamStateChanged
+  - 🟨RecordStateChanged
+  - 🟨ReplayBufferStateChanged
+  - 🟨VirtualcamStateChanged
+  - 🟨ReplayBufferSaved
+- 🟨<b>Media Input Events</b>
+  - 🟨MediaInputPlaybackStarted
+  - 🟨MediaInputPlaybackEnded
+  - 🟨MediaInputActionTriggered
+- 🟨<b>Ui Events</b>
+  - 🟩StudioModeStateChanged
+  - 🟨ScreenshotSaved
 
 ## Requests
 - 🟩<b>General Requests</b>
@@ -180,74 +251,6 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟩GetMonitorList
   - 🟩OpenVideoMixProjector
   - 🟩OpenSourceProjector
-
-## Events
-	
-- 🟨<b>General Events</b>
-  - 🟩ExitStarted
-  - 🟨VendorEvent
-  - 🟨CustomEvent
-- 🟩<b>Config Events</b>
-  - 🟩CurrentSceneCollectionChanging
-  - 🟩CurrentSceneCollectionChanged
-  - 🟩SceneCollectionListChanged
-  - 🟩CurrentProfileChanging
-  - 🟩CurrentProfileChanged
-  - 🟩ProfileListChanged
-- 🟩<b>Scene Events</b>
-  - 🟩SceneCreated
-  - 🟩SceneRemoved
-  - 🟩SceneNameChanged
-  - 🟩CurrentProgramSceneChanged
-  - 🟩CurrentPreviewSceneChanged
-  - 🟩SceneListChanged
-- 🟩<b>Input Events</b>
-  - 🟩InputCreated
-  - 🟩InputRemoved
-  - 🟩InputNameChanged
-  - 🟩InputActiveStateChanged
-  - 🟩InputShowStateChanged
-  - 🟩InputMuteStateChanged
-  - 🟩InputVolumeChanged
-  - 🟩InputAudioBalanceChanged
-  - 🟩InputAudioSyncOffsetChanged
-  - 🟩InputAudioTracksChanged
-  - 🟩InputAudioMonitorTypeChanged
-  - 🟩InputVolumeMeters
-- 🟨<b>Transitions Events</b>
-  - 🟨CurrentSceneTransitionChanged
-  - 🟨CurrentSceneTransitionDurationChanged
-  - 🟨SceneTransitionStarted
-  - 🟨SceneTransitionEnded
-  - 🟨SceneTransitionVideoEnded
-- 🟨<b>Filters Events</b>
-  - 🟨SourceFilterListReindexed
-  - 🟨SourceFilterCreated
-  - 🟨SourceFilterRemoved
-  - 🟨SourceFilterNameChanged
-  - 🟨SourceFilterEnableStateChanged
-- 🟩<b>Scene Item Events</b>
-  - 🟩SceneItemCreated
-  - 🟩SceneItemRemoved
-  - 🟩SceneItemListReindexed
-  - 🟩SceneItemEnableStateChanged
-  - 🟩SceneItemLockStateChanged
-  - 🟩SceneItemSelected
-  - 🟩SceneItemTransformChanged
-- 🟨<b>Output Events</b>
-  - 🟨StreamStateChanged
-  - 🟨RecordStateChanged
-  - 🟨ReplayBufferStateChanged
-  - 🟨VirtualcamStateChanged
-  - 🟨ReplayBufferSaved
-- 🟨<b>Media Input Events</b>
-  - 🟨MediaInputPlaybackStarted
-  - 🟨MediaInputPlaybackEnded
-  - 🟨MediaInputActionTriggered
-- 🟨<b>Ui Events</b>
-  - 🟩StudioModeStateChanged
-  - 🟨ScreenshotSaved
-
 
 # Getting Started
 ```C#
