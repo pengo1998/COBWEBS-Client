@@ -264,6 +264,13 @@ COBWEBSConfiguration config = new() {
 };
 COBWEBSClient client = new(config);
 
+client.sceneCreated += Client_SceneCreated;
+
+void Client_SceneCreated(object? sender, SceneCreatedEventArgs e)
+{
+	Console.WriteLine($"{e.sceneName} was created and IsGroup? {e.isGroup}");
+}
+
 var res = await client.GetVersion();
 Console.WriteLine($"You are on a {res.platform} computer.");
 
