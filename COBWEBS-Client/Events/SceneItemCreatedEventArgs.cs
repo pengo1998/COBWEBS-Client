@@ -10,7 +10,7 @@ namespace COBWEBS_Client.Events
 	{
 		public string sceneName { get; set; }
 		public string sourceName { get; set; }
-		public int sceneItemId { get; set; }
-		public int sceneItemIndex { get; set; }
+		public long sceneItemId { get; set; }
+		public long sceneItemIndex { get; set; }
 	}
 }

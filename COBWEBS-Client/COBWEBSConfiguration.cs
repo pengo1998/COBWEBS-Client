@@ -104,7 +104,7 @@ namespace COBWEBS_Client
 
 	public enum EventType
 	{
-		ExitStart,
+		ExitStarted,
 		VendorEvent,
 		CustomEvent,
 		CurrentSceneCollectionChanging,

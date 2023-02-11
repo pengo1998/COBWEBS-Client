@@ -1,8 +1,11 @@
-﻿using System;
+﻿using COBWEBS_Client.Structs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using COBWEBS_Client.Structs;
 
 namespace COBWEBS_Client.Events
 {
@@ -11,6 +14,6 @@ namespace COBWEBS_Client.Events
 		/// <summary>
 		/// Updated list of scenes
 		/// </summary>
-		public object[] scenes { get; set; }
+		public STRUCT_SCENES[] scenes { get; set; }
 	}
 }

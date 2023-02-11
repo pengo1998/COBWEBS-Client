@@ -9,6 +9,6 @@ namespace COBWEBS_Client.Events
 	public class InputAudioSyncOffsetChangedEventArgs : EventArgs
 	{
 		public string inputName { get; set; }
-		public int inputAudioSyncOffset { get; set; }
+		public long inputAudioSyncOffset { get; set; }
 	}
 }

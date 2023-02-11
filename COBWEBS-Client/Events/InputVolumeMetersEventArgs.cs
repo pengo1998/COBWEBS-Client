@@ -1,4 +1,5 @@
-﻿using System;
+﻿using COBWEBS_Client.Structs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace COBWEBS_Client.Events
 {
 	public class InputVolumeMetersEventArgs : EventArgs
 	{
-		public object[] inputs { get; set; }
+		public STRUCT_METER_DATA[] inputs { get; set; }
 	}
 }

@@ -8,6 +8,6 @@ namespace COBWEBS_Client.Events
 {
 	public class CurrentEvenTransitionDurationChangedEventArgs : EventArgs
 	{
-		public int transitionDuration { get; set; }
+		public long transitionDuration { get; set; }
 	}
 }

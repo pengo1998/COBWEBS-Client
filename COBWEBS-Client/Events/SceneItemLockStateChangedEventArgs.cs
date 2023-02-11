@@ -9,7 +9,7 @@ namespace COBWEBS_Client.Events
 	public class SceneItemLockStateChangedEventArgs : EventArgs
 	{
 		public string sceneName { get; set; }
-		public int sceneItemId { get; set; }
+		public long sceneItemId { get; set; }
 		public bool sceneItemLocked { get; set; }
 	}
 }

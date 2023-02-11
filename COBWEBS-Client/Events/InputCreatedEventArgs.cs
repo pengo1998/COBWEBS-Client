@@ -12,7 +12,7 @@ namespace COBWEBS_Client.Events
 		public string inputName { get; set; }
 		public string inputKind { get; set; }
 		public string unversionedInputKind { get; set; }
-		public JToken inputSettings { get; set; }
-		public JToken defaultInputsettings { get; set; }
+		public object inputSettings { get; set; }
+		public object defaultInputSettings { get; set; }
 	}
 }

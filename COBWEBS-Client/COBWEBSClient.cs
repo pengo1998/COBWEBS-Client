@@ -336,305 +336,92 @@ namespace COBWEBS_Client
 		}
 		private async void HandleEvent(JObject message)
 		{
-			STRUCT_EVENT evnt = message["d"].ToObject<STRUCT_EVENT>();
-			Type argType = GetEventArgTypeFromName(evnt.eventType.ToString());
-			if (argType == null)
+			STRUCT_EVENT evnt;
+			try
 			{
-				Logger.LogError($"Failed to find EventArg object for event: {evnt.eventType.ToString()}");
-				return;
-			}
-			object instance = Activator.CreateInstance(argType);
-			foreach(JProperty property in evnt.eventData)
-			{
-				var nodeType = property.Value.Type;
-				PropertyInfo? pi = argType.GetProperty(property.Name, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-				switch (nodeType)
+				evnt = message["d"].ToObject<STRUCT_EVENT>();
+				Type argType = GetEventArgTypeFromName(evnt.eventType.ToString());
+				if (argType == null)
 				{
-					case JTokenType.Array:
-						Type fieldType = GetEventArgFieldStruct(property.Name);
-						if(fieldType == null)
-						{
-							Logger.LogError($"Failed to find struct for argument: {property.Name} in event: {evnt.eventType.ToString()}");
-							return;
-						}
-						int numEntries = property.Values().Count();
-						Array entries = Array.CreateInstance(fieldType, numEntries);
-						for(int i = 0; i < numEntries; i++)
-						{
-							object entry = property.Values().ToArray()[i].ToObject(fieldType);
-							entries.SetValue(entry, i);
-						}
-						pi.SetValue(instance, entries);
-						break;
-					case JTokenType.Boolean:
-						pi.SetValue(instance, property.Value.ToObject<bool>());
-						break;
-					case JTokenType.String:
-						pi.SetValue(instance, property.Value.ToObject<string>());
-						break;
-					case JTokenType.Integer:
-						pi.SetValue(instance, property.Value.ToObject<long>());
-						break;
-					case JTokenType.Date:
-						pi.SetValue(instance, property.Value.ToObject<string>());
-						break;
-					case JTokenType.Bytes:
-						pi.SetValue(instance, property.Value.ToObject<byte[]>());
-						break;
-					case JTokenType.Float:
-						pi.SetValue(instance, property.Value.ToObject<float>());
-						break;
-					case JTokenType.Null:
-						pi.SetValue(instance, null);
-						break;
+					Logger.LogWarning($"Failed to find EventArg object for event: {evnt.eventType.ToString()}");
+					return;
 				}
-				
-				//if(pi != null)
-				//{
-				//	pi.SetValue(instance, property.Value.ToObject<object>());
-				//}
-			}
-			var eventField = this.GetType().GetRuntimeFields().FirstOrDefault(x => x.Name == evnt.eventType.ToString());
-			if(eventField == null)
+				object instance = Activator.CreateInstance(argType);
+				foreach (JProperty property in evnt.eventData)
+				{
+					var nodeType = property.Value.Type;
+					PropertyInfo? pi = argType.GetProperty(property.Name, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
+					switch (nodeType)
+					{
+						case JTokenType.Array:
+							Type fieldType = argType.GetProperty(property.Name).PropertyType.GetElementType();
+							if (fieldType == null)
+							{
+								Logger.LogError($"Failed to find struct for argument: {property.Name} in event: {evnt.eventType.ToString()}");
+								return;
+							}
+							int numEntries = property.Values().Count();
+							Array entries = Array.CreateInstance(fieldType, numEntries);
+							for (int i = 0; i < numEntries; i++)
+							{
+								object entry = property.Values().ToArray()[i].ToObject(fieldType);
+								entries.SetValue(entry, i);
+							}
+							pi.SetValue(instance, entries);
+							break;
+						case JTokenType.Boolean:
+							pi.SetValue(instance, property.Value.ToObject<bool>());
+							break;
+						case JTokenType.String:
+							pi.SetValue(instance, property.Value.ToObject<string>());
+							break;
+						case JTokenType.Integer:
+							pi.SetValue(instance, property.Value.ToObject<long>());
+							break;
+						case JTokenType.Date:
+							pi.SetValue(instance, property.Value.ToObject<string>());
+							break;
+						case JTokenType.Float:
+							pi.SetValue(instance, property.Value.ToObject<float>());
+							break;
+						case JTokenType.Null:
+							pi.SetValue(instance, null);
+							break;
+						default:
+							Type fType = argType.GetProperty(property.Name).PropertyType;
+							pi.SetValue(instance, property.Value.ToObject(fType));
+							break;
+					}
+				}
+				var eventField = this.GetType().GetRuntimeFields().FirstOrDefault(x => x.Name == evnt.eventType.ToString());
+				if (eventField == null)
+				{
+					Logger.LogError($"Failed to find eventhandler field for event: {evnt.eventType.ToString()}");
+					return;
+				}
+				var eventFieldValue = eventField.GetValue(this) as MulticastDelegate;
+				if (eventFieldValue == null)
+				{
+					Logger.LogDebug($"No listeners for event: {evnt.eventType.ToString()}");
+					return;
+				}
+				foreach (var handler in eventFieldValue.GetInvocationList())
+				{
+					handler.Method.Invoke(this, new object[] { this, instance });
+				}
+				Logger.LogDebug($"Triggered eventhandler for event: {evnt.eventType.ToString()}");
+			} catch(JsonSerializationException e)
 			{
-				Logger.LogError($"Failed to find eventhandler field for event: {evnt.eventType.ToString()}");
+				string evntType = message["d"]["eventType"].ToObject<string>();
+				if(evntType != EventType.ExitStarted.ToString())
+				{
+					Logger.LogWarning($"JsonSerializerException encountered while trying to serialize envent");
+					Logger.LogError(e.ToString());
+					return;
+				}
+				Logger.LogDebug("OBS Closed");
 				return;
 			}
-			var eventFieldValue = eventField.GetValue(this) as MulticastDelegate;
-			if(eventFieldValue == null)
-			{
-				Logger.LogDebug($"No listeners for event: {evnt.eventType.ToString()}");
-				return;
-			}
-			foreach(var handler in eventFieldValue.GetInvocationList())
-			{
-				handler.Method.Invoke(this, new object[] { this, instance });
-			}
-			Logger.LogDebug($"Triggered eventhandler for event: {evnt.eventType.ToString()}");
-			#region OLD_EVENT_HANDLING
-			/*switch (evnt.eventType)
-			{
-				case EventType.ExitStart:
-					if (ExitStarted == null) return;
-					ExitStarted.Invoke(this, null);
-					break;
-				case EventType.VendorEvent:
-					if (VendorEvent == null) return;
-					VendorEvent.Invoke(this, evnt.eventData.ToObject<VendorEventArgs>());
-					break;
-				case EventType.CustomEvent:
-					if (CustomEvent == null) return;
-					CustomEvent.Invoke(this, evnt.eventData.ToObject<CustomEventArgs>());
-					break;
-				case EventType.CurrentSceneCollectionChanging:
-					if (CurrentSceneCollectionChanging == null) return;
-					CurrentSceneCollectionChanging.Invoke(this, evnt.eventData.ToObject<CurrentSceneCollectionChangingEventArgs>());
-					break;
-				case EventType.CurrentSceneCollectionChanged:
-					if (CurrentSceneCollectionChanged == null) return;
-					CurrentSceneCollectionChanged.Invoke(this, evnt.eventData.ToObject<CurrentSceneCollectionChangedEventArgs>());
-					break;
-				case EventType.SceneCollectionListChanged:
-					if (SceneCollectionListChanged == null) return;
-					SceneCollectionListChanged.Invoke(this, evnt.eventData.ToObject<SceneCollectionListChangedEventArgs>());
-					break;
-				case EventType.CurrentProfileChanging:
-					if (CurrentProfileChanging == null) return;
-					CurrentProfileChanging.Invoke(this, evnt.eventData.ToObject<CurrentProfileChangingEventArgs>());
-					break;
-				case EventType.CurrentProfileChanged:
-					if (CurrentProfileChanged == null) return;
-					CurrentProfileChanged.Invoke(this, evnt.eventData.ToObject<CurrentProfileChangedEventArgs>());
-					break;
-				case EventType.ProfileListChanged:
-					if (ProfileListChanged == null) return;
-					ProfileListChanged.Invoke(this, evnt.eventData.ToObject<ProfileListChangedEventArgs>());
-					break;
-				case EventType.SceneCreated:
-					if (SceneCreated == null) return;
-					SceneCreated.Invoke(this, evnt.eventData.ToObject<SceneCreatedEventArgs>());
-					break;
-				case EventType.SceneRemoved:
-					if (SceneRemoved == null) return;
-					SceneRemoved.Invoke(this, evnt.eventData.ToObject<SceneRemovedEventArgs>());
-					break;
-				case EventType.SceneNameChanged:
-					if (SceneNameChanged == null) return;
-					SceneNameChanged.Invoke(this, evnt.eventData.ToObject<SceneNameChangedEventArgs>());
-					break;
-				case EventType.CurrentProgramSceneChanged:
-					if (CurrentPreviewSceneChanged == null) return;
-					CurrentProgramSceneChanged.Invoke(this, evnt.eventData.ToObject<CurrentProgramSceneChangedEventArgs>());
-					break;
-				case EventType.CurrentPreviewSceneChanged:
-					if (CurrentPreviewSceneChanged == null) return;
-					CurrentPreviewSceneChanged.Invoke(this, evnt.eventData.ToObject<CurrentPreviewSceneChangedEventArgs>());
-					break;
-				case EventType.SceneListChanged:
-					if (SceneListChanged == null) return;
-					SceneListChanged.Invoke(this, evnt.eventData.ToObject<SceneListChangedEventArgs>());
-					break;
-				case EventType.InputCreated:
-					if (InputCreated == null) return;
-					InputCreated.Invoke(this, evnt.eventData.ToObject<InputCreatedEventArgs>());
-					break;
-				case EventType.InputRemoved:
-					if (InputRemoved == null) return;
-					InputRemoved.Invoke(this, evnt.eventData.ToObject<InputRemovedEventArgs>());
-					break;
-				case EventType.InputNameChanged:
-					if (InputNameChanged == null) return;
-					InputNameChanged.Invoke(this, evnt.eventData.ToObject<InputNameChangedEventArgs>());
-					break;
-				case EventType.InputActiveStateChanged:
-					if (InputActiveStateChanged == null) return;
-					InputActiveStateChanged.Invoke(this, evnt.eventData.ToObject<InputActiveStateChangedEventArgs>());
-					break;
-				case EventType.InputShowStateChanged:
-					if (InputShowStateChanged == null) return;
-					InputShowStateChanged.Invoke(this, evnt.eventData.ToObject<InputShowStateChangedEventArgs>());
-					break;
-				case EventType.InputMuteStateChanged:
-					if (InputMuteStateChanged == null) return;
-					InputMuteStateChanged.Invoke(this, evnt.eventData.ToObject<InputMuteStateChangedEventArgs>());
-					break;
-				case EventType.InputVolumeChanged:
-					if (InputVolumeChanged == null) return;
-					InputVolumeChanged.Invoke(this, evnt.eventData.ToObject<InputVolumeChangedEventArgs>());
-					break;
-				case EventType.InputAudioBalanceChanged:
-					if (InputAudioBalanceChanged == null) return;
-					InputAudioBalanceChanged.Invoke(this, evnt.eventData.ToObject<InputAudioBalanceChangedEventArgs>());
-					break;
-				case EventType.InputAudioSyncOffsetChanged:
-					if (InputAudioSyncOffsetChanged == null) return;
-					InputAudioSyncOffsetChanged.Invoke(this, evnt.eventData.ToObject<InputAudioSyncOffsetChangedEventArgs>());
-					break;
-				case EventType.InputAudioTracksChanged:
-					if (InputAudioTracksChanged == null) return;
-					InputAudioTracksChanged.Invoke(this, evnt.eventData.ToObject<InputAudioTracksChangedEventArgs>());
-					break;
-				case EventType.InputAudioMonitorTypeChanged:
-					if (InputAudioMonitorTypeChanged == null) return;
-					InputAudioMonitorTypeChanged.Invoke(this, evnt.eventData.ToObject<InputAudioMonitorTypeChangedEventArgs>());
-					break;
-				case EventType.InputVolumeMeters:
-					if (InputVolumeMeters == null) return;
-					InputVolumeMeters.Invoke(this, evnt.eventData.ToObject<InputVolumeMetersEventArgs>());
-					break;
-				case EventType.CurrentSceneTransitionChanged:
-					if (CurrentSceneTransitionChanged == null) return;
-					CurrentSceneTransitionChanged.Invoke(this, evnt.eventData.ToObject<CurrentSceneTransitionChangedEventArgs>());
-					break;
-				case EventType.CurrentSceneTransitionDurationChanged:
-					if (CurrentSceneTransitionDurationChanged == null) return;
-					CurrentSceneTransitionDurationChanged.Invoke(this, evnt.eventData.ToObject<CurrentSceneTransitionChangedEventArgs>());
-					break;
-				case EventType.SceneTransitionStarted:
-					if (SceneTransitionStarted == null) return;
-					SceneTransitionStarted.Invoke(this, evnt.eventData.ToObject<SceneTransitionStartedEventArgs>());
-					break;
-				case EventType.SceneTransitionEnded:
-					if (SceneTransitionEnded == null) return;
-					SceneTransitionEnded.Invoke(this, evnt.eventData.ToObject<SceneTransitionEndedEventArgs>());
-					break;
-				case EventType.SceneTransitionVideoEnded:
-					if (SceneTransitionVideoEnded == null) return;
-					SceneTransitionVideoEnded.Invoke(this, evnt.eventData.ToObject<SceneTransitionVideoEndedEventArgs>());
-					break;
-				case EventType.SourceFilterListReindexed:
-					if (SourceFilterListReindexed == null) return;
-					SourceFilterListReindexed.Invoke(this, evnt.eventData.ToObject<SourceFilterListReindexedEventArgs>());
-					break;
-				case EventType.SourceFilterCreated:
-					if (SourceFilterCreated == null) return;
-					SourceFilterCreated.Invoke(this, evnt.eventData.ToObject<SourceFilterCreatedEventArgs>());
-					break;
-				case EventType.SourceFilterRemoved:
-					if (SourceFilterRemoved == null) return;
-					SourceFilterRemoved.Invoke(this, evnt.eventData.ToObject<SourceFilterRemovedEventArgs>());
-					break;
-				case EventType.SourceFilterNameChanged:
-					if (SourceFilterNameChanged == null) return;
-					SourceFilterNameChanged.Invoke(this, evnt.eventData.ToObject<SourceFilterNameChangedEventArgs>());
-					break;
-				case EventType.SourceFilterEnableStateChanged:
-					if (SourceFilterEnableStateChanged == null) return;
-					SourceFilterEnableStateChanged.Invoke(this, evnt.eventData.ToObject<SourceFilterEnableStateChangedEventArgs>());
-					break;
-				case EventType.SceneItemCreated:
-					if (SceneItemCreated == null) return;
-					SceneItemCreated.Invoke(this, evnt.eventData.ToObject<SceneItemCreatedEventArgs>());
-					break;
-				case EventType.SceneItemRemoved:
-					if (SceneItemRemoved == null) return;
-					SceneItemRemoved.Invoke(this, evnt.eventData.ToObject<SceneItemRemovedEventArgs>());
-					break;
-				case EventType.SceneItemListReindexed:
-					if (SceneItemListReindexed == null) return;
-					SceneItemListReindexed.Invoke(this, evnt.eventData.ToObject<SceneItemListReindexedEventArgs>());
-					break;
-				case EventType.SceneItemEnableStateChanged:
-					if (SceneItemEnableStateChanged == null) return;
-					SceneItemEnableStateChanged.Invoke(this, evnt.eventData.ToObject<SceneItemEnableStateChangedEventArgs>());
-					break;
-				case EventType.SceneItemLockStateChanged:
-					if (SceneItemLockStateChanged == null) return;
-					SceneItemLockStateChanged.Invoke(this, evnt.eventData.ToObject<SceneItemLockStateChangedEventArgs>());
-					break;
-				case EventType.SceneItemSelected:
-					if (SceneItemSelected == null) return;
-					SceneItemSelected.Invoke(this, evnt.eventData.ToObject<SceneItemSelectedEventArgs>());
-					break;
-				case EventType.SceneItemTransformChanged:
-					if (SceneItemTransformChanged == null) return;
-					SceneItemTransformChanged.Invoke(this, evnt.eventData.ToObject<SceneItemTransformChangedEventArgs>());
-					break;
-				case EventType.StreamStateChanged:
-					if (StreamStateChanged == null) return;
-					StreamStateChanged.Invoke(this, evnt.eventData.ToObject<StreamStateChangedEventArgs>());
-					break;
-				case EventType.RecordStateChanged:
-					if (RecordStateChanged == null) return;
-					RecordStateChanged.Invoke(this, evnt.eventData.ToObject<RecordStateChangedEventArgs>());
-					break;
-				case EventType.ReplayBufferStateChanged:
-					if (ReplayBufferStateChanged == null) return;
-					ReplayBufferStateChanged.Invoke(this, evnt.eventData.ToObject<ReplayBufferStateChangedEventArgs>());
-					break;
-				case EventType.VirtualcamStateChanged:
-					if (VirtualcamStateChanged == null) return;
-					VirtualcamStateChanged.Invoke(this, evnt.eventData.ToObject<VirtualcamStateChangedEventArgs>());
-					break;
-				case EventType.ReplayBufferSaved:
-					if (ReplayBufferSaved == null) return;
-					ReplayBufferSaved.Invoke(this, evnt.eventData.ToObject<ReplayBufferSavedEventArgs>());
-					break;
-				case EventType.MediaInputPlaybackStarted:
-					if (MediaInputPlaybackStarted == null) return;
-					MediaInputPlaybackStarted.Invoke(this, evnt.eventData.ToObject<MediaInputPlaybackStartedEventArgs>());
-					break;
-				case EventType.MediaInputPlaybackEnded:
-					if (MediaInputPlaybackEnded == null) return;
-					MediaInputPlaybackEnded.Invoke(this, evnt.eventData.ToObject<MediaInputPlaybackEndedEventArgs>());
-					break;
-				case EventType.MediaInputActionTriggered:
-					if (MediaInputActionTriggered == null) return;
-					MediaInputActionTriggered.Invoke(this, evnt.eventData.ToObject<MediaInputActionTriggeredEventArgs>());
-					break;
-				case EventType.StudioModeStateChanged:
-					if (StudioModeStateChanged == null) return;
-					StudioModeStateChanged.Invoke(this, evnt.eventData.ToObject<StudioModeStateChangedEventArgs>());
-					break;
-				case EventType.ScreenshotSaved:
-					if (ScreenshotSaved == null) return;
-					ScreenshotSaved.Invoke(this, evnt.eventData.ToObject<ScreenshotSavedEventArgs>());
-					break;
-				default:
-					Logger.LogWarning("Received unknown event.");
-					break;
-			}*/
-			#endregion
 		}
 		#endregion
 	}

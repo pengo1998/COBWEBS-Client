@@ -11,7 +11,7 @@ namespace COBWEBS_Client.Events
 		public string sourceName { get; set; }
 		public string filterName { get; set; }
 		public string filterKind { get; set; }
-		public int filterIndex { get; set; }
+		public long filterIndex { get; set; }
 		public object filterSettings { get; set; }
 		public object defaultFilterSettings { get; set; }
 	}

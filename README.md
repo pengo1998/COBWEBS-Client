@@ -184,36 +184,36 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
 ## Events
 	
 - 🟨<b>General Events</b>
-  - 🟨ExitStarted
+  - 🟩ExitStarted
   - 🟨VendorEvent
   - 🟨CustomEvent
-- 🟨<b>Config Events</b>
-  - 🟨CurrentSceneCollectionChanging
-  - 🟨CurrentSceneCollectionChanged
-  - 🟨SceneCollectionListChanged
-  - 🟨CurrentProfileChanging
-  - 🟨CurrentProfileChanged
-  - 🟨ProfileListChanged
-- 🟨<b>Scenes Events</b>
-  - 🟨SceneCreated
-  - 🟨SceneRemoved
-  - 🟨SceneNameChanged
-  - 🟨CurrentProgramSceneChanged
-  - 🟨CurrentPreviewSceneChanged
-  - 🟨SceneListChanged
-- 🟨<b>Inputs Events</b>
-  - 🟨InputCreated
-  - 🟨InputRemoved
-  - 🟨InputNameChanged
-  - 🟨InputActiveStateChanged
-  - 🟨InputShowStateChanged
-  - 🟨InputMuteStateChanged
-  - 🟨InputVolumeChanged
-  - 🟨InputAudioBalanceChanged
-  - 🟨InputAudioSyncOffsetChanged
-  - 🟨InputAudioTracksChanged
-  - 🟨InputAudioMonitorTypeChanged
-  - 🟨InputVolumeMeters
+- 🟩<b>Config Events</b>
+  - 🟩CurrentSceneCollectionChanging
+  - 🟩CurrentSceneCollectionChanged
+  - 🟩SceneCollectionListChanged
+  - 🟩CurrentProfileChanging
+  - 🟩CurrentProfileChanged
+  - 🟩ProfileListChanged
+- 🟩<b>Scene Events</b>
+  - 🟩SceneCreated
+  - 🟩SceneRemoved
+  - 🟩SceneNameChanged
+  - 🟩CurrentProgramSceneChanged
+  - 🟩CurrentPreviewSceneChanged
+  - 🟩SceneListChanged
+- 🟩<b>Input Events</b>
+  - 🟩InputCreated
+  - 🟩InputRemoved
+  - 🟩InputNameChanged
+  - 🟩InputActiveStateChanged
+  - 🟩InputShowStateChanged
+  - 🟩InputMuteStateChanged
+  - 🟩InputVolumeChanged
+  - 🟩InputAudioBalanceChanged
+  - 🟩InputAudioSyncOffsetChanged
+  - 🟩InputAudioTracksChanged
+  - 🟩InputAudioMonitorTypeChanged
+  - 🟩InputVolumeMeters
 - 🟨<b>Transitions Events</b>
   - 🟨CurrentSceneTransitionChanged
   - 🟨CurrentSceneTransitionDurationChanged
@@ -226,21 +226,21 @@ COBWEBS-Client is a .NET Core 6 based library for interacting with [obs-websocke
   - 🟨SourceFilterRemoved
   - 🟨SourceFilterNameChanged
   - 🟨SourceFilterEnableStateChanged
-- 🟨<b>Scene Items Events</b>
-  - 🟨SceneItemCreated
-  - 🟨SceneItemRemoved
+- 🟩<b>Scene Item Events</b>
+  - 🟩SceneItemCreated
+  - 🟩SceneItemRemoved
   - 🟩SceneItemListReindexed
-  - 🟨SceneItemEnableStateChanged
-  - 🟨SceneItemLockStateChanged
-  - 🟨SceneItemSelected
-  - 🟨SceneItemTransformChanged
-- 🟨<b>Outputs Events</b>
+  - 🟩SceneItemEnableStateChanged
+  - 🟩SceneItemLockStateChanged
+  - 🟩SceneItemSelected
+  - 🟩SceneItemTransformChanged
+- 🟨<b>Output Events</b>
   - 🟨StreamStateChanged
   - 🟨RecordStateChanged
   - 🟨ReplayBufferStateChanged
   - 🟨VirtualcamStateChanged
   - 🟨ReplayBufferSaved
-- 🟨<b>Media Inputs Events</b>
+- 🟨<b>Media Input Events</b>
   - 🟨MediaInputPlaybackStarted
   - 🟨MediaInputPlaybackEnded
   - 🟨MediaInputActionTriggered
